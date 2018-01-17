@@ -12,6 +12,6 @@
 Calculates the time at which each transcript will be within +/- epsilon% of its equilibrium value
 }
 \examples{
-ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
+ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
 ts=timeEquilibrium(ts,0.01) # To 99\% or 101\% of equilibrium value
 }

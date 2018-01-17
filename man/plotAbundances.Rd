@@ -10,7 +10,7 @@
 Plots transcript abundance. Must run calculateAboundance first.
 }
 \examples{
-ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
+ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
 ts=calculateAbundance(ts,0:30)
 plotAbundances(ts)
 }

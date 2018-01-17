@@ -15,6 +15,12 @@ simpleKineticExperiment(syn.rate, deg.rate, init.abundance = NA, ids = NA,
 \item{init.abundance}{Initial abundance at time 0.}
 
 \item{ids}{A character string id.}
+
+\item{data}{Experimental or simulated matrix of count data}
+
+\item{col.info}{A data.frame where each row corresponds to the column in data with the same index and the columns are different properties}
+
+\item{design}{An expression that describes the experimental design}
 }
 \description{
 Contructs a simple kinetic simulation object from synthesis and degredation rates

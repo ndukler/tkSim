@@ -5,6 +5,9 @@
 #' @param deg.rate Degredation rate. Must be between 0 and 1.
 #' @param init.abundance Initial abundance at time 0.
 #' @param ids A character string id.
+#' @param data Experimental or simulated matrix of count data
+#' @param col.info A data.frame where each row corresponds to the column in data with the same index and the columns are different properties
+#' @param design An expression that describes the experimental design
 #' @name simpleKineticExperiment
 #' @include class-simpleKineticExperiment.R
 #' @export

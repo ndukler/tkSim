@@ -10,7 +10,7 @@ methods::setGeneric("timeEpsilonEq", function(object,epsilon.percent) {
 #' @name timeEpsilonEq
 #' @include class-simpleKineticExperiment.R
 #' @examples
-#' ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
+#' ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
 #' ts=timeEquilibrium(ts,0.01) # To 99% or 101% of equilibrium value
 #' @export
 methods::setMethod("timeEpsilonEq", signature(object = "simpleKineticExperiment"), function(object,epsilon.percent) {

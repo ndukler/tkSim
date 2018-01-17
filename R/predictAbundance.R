@@ -10,7 +10,7 @@ methods::setGeneric("predictAbundance", function(object,times) {
 #' @name predictAbundance
 #' @include  class-simpleKineticExperiment.R
 #' @examples
-#' ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
+#' ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
 #' ts=predictAbundance(ts,0:30)
 #' @export
 methods::setMethod("predictAbundance", signature(object = "simpleKineticExperiment",times="numeric"), function(object,times) {

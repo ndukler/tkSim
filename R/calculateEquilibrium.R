@@ -9,7 +9,7 @@ methods::setGeneric("calculateEquilibrium", function(object) {
 #' @name calculateEquilibrium
 #' @include  class-simpleKineticExperiment.R
 #' @examples
-#' ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
+#' ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
 #' ts=calculateEquilibrium(ts)
 #' @export
 methods::setMethod("calculateEquilibrium", signature(object = "simpleKineticExperiment"), function(object) {
