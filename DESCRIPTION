@@ -16,11 +16,13 @@ Imports:
   data.table,
   methods
 Collate: 
-    'simpleKineticSimClass.R'
-    'calculateAbundance.R'
+    'class-kineticExperiment.R'
+    'class-simpleKineticExperiment.R'
     'calculateEquilibrium.R'
+    'fitModel.R'
     'package.R'
     'plotAbundances.R'
-    'simpleKineticSim.R'
+    'predictAbundance.R'
+    'simpleKineticExperiment.R'
     'timeEpsilonEq.R'
 RoxygenNote: 6.0.1

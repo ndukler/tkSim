@@ -1,4 +1,4 @@
-methods::setGeneric("timeEpsilonExperiment", function(object,epsilon.percent) {
+methods::setGeneric("timeEpsilonEq", function(object,epsilon.percent) {
   standardGeneric("timeEpsilonEq")
 })
 
@@ -8,7 +8,7 @@ methods::setGeneric("timeEpsilonExperiment", function(object,epsilon.percent) {
 #' @param object A simpleKineticSim object
 #' @param epsilon.percent +/- Percent of equilibrium that must be reached
 #' @name timeEpsilonEq
-#' @include  class-simpleKineticExperiment.R
+#' @include class-simpleKineticExperiment.R
 #' @examples
 #' ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
 #' ts=timeEquilibrium(ts,0.01) # To 99% or 101% of equilibrium value
