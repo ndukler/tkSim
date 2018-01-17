@@ -13,7 +13,7 @@ methods::setGeneric("timeEpsilonExperiment", function(object,epsilon.percent) {
 #' ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
 #' ts=timeEquilibrium(ts,0.01) # To 99% or 101% of equilibrium value
 #' @export
-methods::setMethod("timeEpsilonEq", signature(object = "simpleKineticSim"), function(object,epsilon.percent) {
+methods::setMethod("timeEpsilonEq", signature(object = "simpleKineticExperiment"), function(object,epsilon.percent) {
   ev=calculateEquilibrium(object)@equilibrium.values
   ## Determine the stopping value depending on direction of approach
   fin=numeric(length(ev))

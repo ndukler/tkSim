@@ -13,9 +13,9 @@ methods::setGeneric("plotAbundances", function(object) {
 #' ts=calculateAbundance(ts,0:30)
 #' plotAbundances(ts)
 #' @export
-methods::setMethod("plotAbundances", signature(object = "simpleKineticExperiment"), function(object) {
+methods::setMethod("plotAbundances", signature(object = "kineticExperiment"), function(object) {
   if(ncol(object@abundances)>0){
-    ab.m=data.table::as.data.table(reshape2::melt(object@abundances,value.name="Abundance"))
+    ab.m=data.table::as.data.table(reshape2::melt(object@predicted.abundance,value.name="Abundance"))
     ab.m[,Var2:=object@times[Var2]]
     data.table::setnames(ab.m,c("Var1","Var2"),c("Id","Time"))
     g <- ggplot2::ggplot(ab.m,ggplot2::aes(x=Time,y=Abundance,group=Id))+
@@ -23,6 +23,6 @@ methods::setMethod("plotAbundances", signature(object = "simpleKineticExperiment
       ggplot2::theme_classic()
     return(g)
   } else {
-    stop("Must run calculateAbundance first.")
+    stop("Must run predictAbundance first.")
   }
 })

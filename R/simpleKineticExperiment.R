@@ -8,10 +8,13 @@
 #' @name simpleKineticExperiment
 #' @include class-simpleKineticExperiment.R
 #' @export
-simpleKineticExperiment <- function(syn.rate,deg.rate,init.abundance=NA,ids=NA){
+simpleKineticExperiment <- function(syn.rate,deg.rate,init.abundance=NA,ids=NA,data=NULL,col.info=data.frame(),design=expression()){
   if(length(init.abundance) == 1 && is.na(init.abundance))
     init.abundance=rep(0,length(syn.rate))
   if(length(ids) == 1 && is.na(ids))
     ids=as.character(1:length(syn.rate))
-  new("simpleKineticSim",synthesis.rates=syn.rate,degredation.rates=deg.rate,initial.values=init.abundance,ids=ids)
+  if(is.null(data))
+    data=matrix(nrow=0,ncol=0)
+  new("simpleKineticExperiment",synthesis.rates=syn.rate,degredation.rates=deg.rate,initial.values=init.abundance,ids=ids,col.info=col.info,
+      design=design,data=data)
 }
