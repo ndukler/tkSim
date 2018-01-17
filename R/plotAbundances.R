@@ -14,7 +14,7 @@ methods::setGeneric("plotAbundances", function(object) {
 #' plotAbundances(ts)
 #' @export
 methods::setMethod("plotAbundances", signature(object = "kineticExperiment"), function(object) {
-  if(ncol(object@abundances)>0){
+  if(ncol(object@predicted.abundance)>0){
     ab.m=data.table::as.data.table(reshape2::melt(object@predicted.abundance,value.name="Abundance"))
     ab.m[,Var2:=object@times[Var2]]
     data.table::setnames(ab.m,c("Var1","Var2"),c("Id","Time"))
