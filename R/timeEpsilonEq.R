@@ -17,8 +17,9 @@ methods::setMethod("timeEpsilonEq", signature(object = "simpleKineticSim"), func
   ev=calculateEquilibrium(object)@equilibrium.values
   ## Determine the stopping value depending on direction of approach
   fin=numeric(length(ev))
-  fin[object@initial.values <= ev] = ev-(ev*epsilon.percent)
-  fin[object@initial.values > ev] = ev+(ev*epsilon.percent)
+  fin[object@initial.values < ev] = ev[object@initial.values < ev]-(ev[object@initial.values < ev]*epsilon.percent)
+  fin[object@initial.values > ev] = ev[object@initial.values > ev]+(ev[object@initial.values > ev]*epsilon.percent)
+  fin[object@initial.values == ev] = 0
   ## Return time at which value is reached
   return(log((fin-object@synthesis.rates/object@degredation.rates)/(object@initial.values-object@synthesis.rates/object@degredation.rates))/-object@degredation.rates)
 })
