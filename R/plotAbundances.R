@@ -7,13 +7,13 @@ methods::setGeneric("plotAbundances", function(object) {
 #' Plots transcript abundance. Must run calculateAboundance first.
 #' @param object A simpleKineticSim object
 #' @name plotAbundances
-#' @include simpleKineticSimClass.R
+#' @include  class-simpleKineticExperiment.R
 #' @examples
 #' ts=simpleKineticSim(syn.rate = 1:10,deg.rate = rep(0.3,10))
 #' ts=calculateAbundance(ts,0:30)
 #' plotAbundances(ts)
 #' @export
-methods::setMethod("plotAbundances", signature(object = "simpleKineticSim"), function(object) {
+methods::setMethod("plotAbundances", signature(object = "simpleKineticExperiment"), function(object) {
   if(ncol(object@abundances)>0){
     ab.m=data.table::as.data.table(reshape2::melt(object@abundances,value.name="Abundance"))
     ab.m[,Var2:=object@times[Var2]]

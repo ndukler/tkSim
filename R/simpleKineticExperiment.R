@@ -5,10 +5,10 @@
 #' @param deg.rate Degredation rate. Must be between 0 and 1.
 #' @param init.abundance Initial abundance at time 0.
 #' @param ids A character string id.
-#' @name simpleKineticSim
-#' @include simpleKineticSimClass.R
+#' @name simpleKineticExperiment
+#' @include class-simpleKineticExperiment.R
 #' @export
-simpleKineticSim <- function(syn.rate,deg.rate,init.abundance=NA,ids=NA){
+simpleKineticExperiment <- function(syn.rate,deg.rate,init.abundance=NA,ids=NA){
   if(length(init.abundance) == 1 && is.na(init.abundance))
     init.abundance=rep(0,length(syn.rate))
   if(length(ids) == 1 && is.na(ids))
