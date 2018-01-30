@@ -7,17 +7,16 @@
 #' @param ids A character string id.
 #' @param data Experimental or simulated matrix of count data
 #' @param col.info A data.frame where each row corresponds to the column in data with the same index and the columns are different properties
-#' @param design An expression that describes the experimental design
 #' @name simpleKineticExperiment
 #' @include class-simpleKineticExperiment.R
 #' @export
-simpleKineticExperiment <- function(syn.rate,deg.rate,init.abundance=NA,ids=NA,data=NULL,col.info=data.frame(),design=expression()){
+simpleKineticExperiment <- function(syn.rate=NA_real_,deg.rate=NA_real_,init.abundance=NA_real_,ids=NA,data=NULL,col.info=data.frame(),error.model=function(x){}){
   if(length(init.abundance) == 1 && is.na(init.abundance))
     init.abundance=rep(0,length(syn.rate))
   if(length(ids) == 1 && is.na(ids))
-    ids=as.character(1:length(syn.rate))
+    ids=as.character(1:max(length(syn.rate),nrow(data)))
   if(is.null(data))
     data=matrix(nrow=0,ncol=0)
   new("simpleKineticExperiment",synthesis.rates=syn.rate,degredation.rates=deg.rate,initial.values=init.abundance,ids=ids,col.info=col.info,
-      design=design,data=data)
+      data=data,error.model=error.model)
 }

@@ -4,8 +4,9 @@
 \alias{simpleKineticExperiment}
 \title{Build simulation object}
 \usage{
-simpleKineticExperiment(syn.rate, deg.rate, init.abundance = NA, ids = NA,
-  data = NULL, col.info = data.frame(), design = expression())
+simpleKineticExperiment(syn.rate = NA_real_, deg.rate = NA_real_,
+  init.abundance = NA_real_, ids = NA, data = NULL,
+  col.info = data.frame(), error.model = function(x) { })
 }
 \arguments{
 \item{syn.rate}{Synthesis rates. Must be greater than 0.}
@@ -19,8 +20,6 @@ simpleKineticExperiment(syn.rate, deg.rate, init.abundance = NA, ids = NA,
 \item{data}{Experimental or simulated matrix of count data}
 
 \item{col.info}{A data.frame where each row corresponds to the column in data with the same index and the columns are different properties}
-
-\item{design}{An expression that describes the experimental design}
 }
 \description{
 Contructs a simple kinetic simulation object from synthesis and degredation rates

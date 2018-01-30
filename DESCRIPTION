@@ -24,5 +24,6 @@ Collate:
     'plotAbundances.R'
     'predictAbundance.R'
     'simpleKineticExperiment.R'
+    'simulateReads.R'
     'timeEpsilonEq.R'
 RoxygenNote: 6.0.1

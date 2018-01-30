@@ -15,8 +15,13 @@ methods::setGeneric("predictAbundance", function(object,times) {
 #' @export
 methods::setMethod("predictAbundance", signature(object = "simpleKineticExperiment",times="numeric"), function(object,times) {
   object@times <- times
-  ab <- t(apply(cbind(object@synthesis.rates,object@degredation.rates,object@initial.values),1,
-                             function(x) exp(-x[2]*object@times)*(x[3]-x[1]/x[2])+x[1]/x[2]))
+  if(length(times) > 1){
+    ab <- t(apply(cbind(object@synthesis.rates,object@degredation.rates,object@initial.values),1,
+                             function(x){exp(-x[2]*object@times)*(x[3]-x[1]/x[2])+(x[1]/x[2])}))
+  } else if(length(times)==1){
+    ab <- matrix(apply(cbind(object@synthesis.rates,object@degredation.rates,object@initial.values),1,
+                  function(x){exp(-x[2]*object@times)*(x[3]-x[1]/x[2])+(x[1]/x[2])}),ncol = 1)
+  }
   rownames(ab)=object@ids
   object@predicted.abundance <- ab
   return(object)
