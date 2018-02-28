@@ -4,7 +4,7 @@ methods::setGeneric("plotAbundances", function(object) {
 
 #' Plot transcript abundance
 #'
-#' Plots transcript abundance. Must run calculateAboundance first.
+#' Plots transcript abundance. Must run calculateAbundance first.
 #' @param object A simpleKineticSim object
 #' @name plotAbundances
 #' @include  class-simpleKineticExperiment.R
