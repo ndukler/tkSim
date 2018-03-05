@@ -4,12 +4,12 @@
 \alias{calculateEquilibrium}
 \title{Calculate equilibrium transcript abundance}
 \arguments{
-\item{object}{A simpleKineticSim object}
+\item{object}{A basicKineticModel object}
 }
 \description{
 Calculates equilibrium transcript abundance
 }
 \examples{
-ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
+ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 ts=calculateEquilibrium(ts)
 }

@@ -4,13 +4,13 @@
 \alias{plotAbundances}
 \title{Plot transcript abundance}
 \arguments{
-\item{object}{A simpleKineticSim object}
+\item{object}{A basicKineticModel object}
 }
 \description{
-Plots transcript abundance. Must run calculateAboundance first.
+Plots transcript abundance. Must run calculateAbundance first.
 }
 \examples{
-ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
+ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 ts=calculateAbundance(ts,0:30)
 plotAbundances(ts)
 }

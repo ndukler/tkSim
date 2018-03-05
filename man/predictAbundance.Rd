@@ -4,7 +4,7 @@
 \alias{predictAbundance}
 \title{Calculate transcript abundance}
 \arguments{
-\item{object}{A simpleKineticSim object}
+\item{object}{A basicKineticModel object}
 
 \item{times}{Times to calculate abundance values at.}
 }
@@ -12,6 +12,6 @@
 Calculates transcript abundance
 }
 \examples{
-ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
+ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 ts=predictAbundance(ts,0:30)
 }

@@ -5,17 +5,17 @@ methods::setGeneric("plotAbundances", function(object) {
 #' Plot transcript abundance
 #'
 #' Plots transcript abundance. Must run calculateAbundance first.
-#' @param object A simpleKineticSim object
+#' @param object A basicKineticModel object
 #' @name plotAbundances
-#' @include  class-simpleKineticExperiment.R
+#' @include  class-basicKineticModel.R
 #' @examples
-#' ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
+#' ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 #' ts=calculateAbundance(ts,0:30)
 #' plotAbundances(ts)
 #' @export
-methods::setMethod("plotAbundances", signature(object = "kineticExperiment"), function(object) {
-  if(ncol(object@predicted.abundance)>0){
-    ab.m=data.table::as.data.table(reshape2::melt(object@predicted.abundance,value.name="Abundance"))
+methods::setMethod("plotAbundances", signature(object = "kineticModel"), function(object) {
+  if(ncol(object@predictedAbundance)>0){
+    ab.m=data.table::as.data.table(reshape2::melt(object@predictedAbundance,value.name="Abundance"))
     ab.m[,Var2:=object@times[Var2]]
     data.table::setnames(ab.m,c("Var1","Var2"),c("Id","Time"))
     g <- ggplot2::ggplot(ab.m,ggplot2::aes(x=Time,y=Abundance,group=Id))+

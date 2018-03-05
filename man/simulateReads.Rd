@@ -12,12 +12,12 @@
 
 \item{times}{A vector of times}
 
-\item{error.model}{A function that takes in a vector of values and returns a vector of dispersions for a negative bionomial model}
+\item{errorModel}{A function that takes in a vector of values and returns a vector of dispersions for a negative bionomial model}
 }
 \description{
-Simulate Reads from kineticExperiment object
+Simulate Reads from kineticModel object
 }
 \examples{
-ts=simpleKineticExperiment(syn.rate = 1:10,deg.rate = rep(0.3,10))
+ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 ts=calculateEquilibrium(ts)
 }
