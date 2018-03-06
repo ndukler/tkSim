@@ -18,12 +18,12 @@ Imports:
 Collate: 
     'class-kineticModel.R'
     'class-basicKineticModel.R'
+    'basicKineticModel.R'
     'calculateEquilibrium.R'
     'fitModel.R'
     'package.R'
     'plotAbundances.R'
     'predictAbundance.R'
-    'basicKineticModel.R'
     'simulateReads.R'
     'timeEpsilonEq.R'
 RoxygenNote: 6.0.1

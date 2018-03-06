@@ -5,4 +5,5 @@
 #' @docType package
 #' @author Noah Dukler <ndukler@cshl.edu>
 #' @importFrom data.table :=
+#' @import methods
 NULL
