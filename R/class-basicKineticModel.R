@@ -1,4 +1,4 @@
-checkSimple <- function(object) {
+checkBasic <- function(object) {
   errors <- character()
   if(!is.na(object@synthRates) && !is.na(object@degRates)){
     if(length(object@synthRates)!=length(object@degRates)){
@@ -33,4 +33,4 @@ checkSimple <- function(object) {
 methods::setClass(Class = "basicKineticModel",
                   representation = representation(initVals = "numeric", synthRates = "numeric",degRates="numeric"),
                   prototype = methods::prototype(initVals = NA_real_,synthRates = NA_real_,degRates=NA_real_),
-                  validity = checkSimple,contains="kineticModel")
+                  validity = checkBasic,contains="kineticModel")

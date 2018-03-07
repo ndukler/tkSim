@@ -14,8 +14,8 @@ methods::setGeneric("plotAbundances", function(object) {
 #' plotAbundances(ts)
 #' @export
 methods::setMethod("plotAbundances", signature(object = "kineticModel"), function(object) {
-  if(ncol(object@predictedAbundance)>0){
-    ab.m=data.table::as.data.table(reshape2::melt(object@predictedAbundance,value.name="Abundance"))
+  if(ncol(object@simData)>0){
+    ab.m=data.table::as.data.table(reshape2::melt(object@simData,value.name="Abundance"))
     ab.m[,Var2:=object@times[Var2]]
     data.table::setnames(ab.m,c("Var1","Var2"),c("Id","Time"))
     g <- ggplot2::ggplot(ab.m,ggplot2::aes(x=Time,y=Abundance,group=Id))+

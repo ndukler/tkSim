@@ -23,6 +23,6 @@ methods::setMethod("predictAbundance", signature(object = "basicKineticModel",ti
                   function(x){exp(-x[2]*object@times)*(x[3]-x[1]/x[2])+(x[1]/x[2])}),ncol = 1)
   }
   rownames(ab)=object@ids
-  object@predictedAbundance <- ab
+  object@simData <- ab
   return(object)
 })

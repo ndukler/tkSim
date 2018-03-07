@@ -49,7 +49,7 @@ methods::setMethod("simulateReads", signature(object = "kineticModel"),function(
   ## Get expected number of reads for each transcript
   object=predictAbundance(ts,object@times)
   ## Rescale for library size
-  z=prop.table(object@predictedAbundance,2)*expected.lib.size
+  z=prop.table(object@simData,2)*expected.lib.size
   ind=1
   for(s in 1:ncol(z)){
     for(tr in 1:nrow(z)){
