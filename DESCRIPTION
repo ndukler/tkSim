@@ -21,6 +21,7 @@ Collate:
     'basicKineticModel.R'
     'calculateEquilibrium.R'
     'fitModel.R'
+    'inferParameters.R'
     'package.R'
     'plotAbundances.R'
     'predictAbundance.R'

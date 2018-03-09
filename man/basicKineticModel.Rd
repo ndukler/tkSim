@@ -2,10 +2,10 @@
 % Please edit documentation in R/basicKineticModel.R
 \name{basicKineticModel}
 \alias{basicKineticModel}
-\title{Build kinetic model object}
+\title{Basic Kinetic Model Constructor}
 \usage{
-basicKineticModel(synthRate = NA_real_, degRate = NA_real_,
-  initAbund = NA_real_, ids = NA, data = NULL,
+basicKineticModel(times = NA_real_, synthRate = NA_real_,
+  degRate = NA_real_, initAbund = NA_real_, ids = NA, data = NULL,
   expMetadata = data.frame(), errorModel = function(x) { })
 }
 \arguments{

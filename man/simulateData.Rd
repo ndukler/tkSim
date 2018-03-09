@@ -14,6 +14,6 @@
 Simulates theoretical data based on given time points, synthesis rate, and degredation rate.
 }
 \examples{
-bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
+bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10), times=0:30)
 bkm=simulateData(bkm)
 }

@@ -6,7 +6,7 @@
 \arguments{
 \item{object}{A kineticSim object}
 
-\item{expected.lib.size}{The expected library sequencing depth. May vary from this based on sampling.}
+\item{expectedLibSize}{The expected library sequencing depth. May vary from this based on sampling.}
 
 \item{replicates}{Replicates per condition}
 
