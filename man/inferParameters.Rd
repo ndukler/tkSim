@@ -5,7 +5,7 @@
 \alias{inferParameters}
 \title{Infer Parameters from Read Data}
 \usage{
-\S4method{inferParameters}{basicKienticModel}(object)
+\S4method{inferParameters}{basicKineticModel}(object)
 }
 \arguments{
 \item{object}{A \linkS4class{basicKineticModel} object}

@@ -17,7 +17,7 @@ setGeneric("inferParameters", function(object) standardGeneric("inferParameters"
 #' @export
 #'
 
-setMethod("inferParameters", signature(object="basicKienticModel"), function(object)
+setMethod("inferParameters", signature(object="basicKineticModel"), function(object)
 {
   ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
   if(is.null(errorModel)){
@@ -42,12 +42,12 @@ setMethod("inferParameters", signature(object="basicKienticModel"), function(obj
       cat("\nNo simulated data detected. Will now attempt to generate simulated data\n")
       object = simulateData(object)
       cat("\nData simulation successful. Now attempting to simulate reads from data.\n")
-      object = simulateReads(object)
+      object = simulateReads(object,expectedLibSize = 3,replicates = 1,errorModel=function(x){rep(2,length(x))}) #cludge
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     } else {
 
       cat("\nNo read data detected. Will now attempt to simulate read data.\n")
-      object = simulateReads(object)
+      object = simulateReads(object,expectedLibSize = 3,replicates = 1,errorModel=function(x){rep(2,length(x))}) #cludge
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     }
   }
