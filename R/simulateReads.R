@@ -6,7 +6,7 @@ methods::setGeneric("simulateReads",signature=c('object','expectedLibSize','repl
 #' Simulate Reads
 #'
 #' Simulate Reads from kineticModel object
-#' @param object A kineticSim object
+#' @param object A kineticModel object
 #' @param expectedLibSize The expected library sequencing depth. May vary from this based on sampling.
 #' @param replicates Replicates per condition
 #' @param times A vector of times
@@ -14,8 +14,9 @@ methods::setGeneric("simulateReads",signature=c('object','expectedLibSize','repl
 #' @name simulateReads
 #' @include  class-kineticModel.R
 #' @examples
-#' ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
-#' ts=calculateEquilibrium(ts)
+#' bkm = basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
+#' bkm = simulateData(bkm) #optional
+#' bkm = simulateReads(bkm,expectedLibSize=3,replicates=1,errorModel=function(x){rep(2,length(x))})
 #' @export
 methods::setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,times=numeric(),errorModel=NULL) {
   ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
@@ -47,7 +48,7 @@ methods::setMethod("simulateReads", signature(object = "kineticModel"),function(
   ## Create a matrix of the appropriate size
   simReads=matrix(nrow=length(object@synthRates),ncol=length(object@times)*replicates)
   ## Get expected number of reads for each transcript
-  object=predictAbundance(ts,object@times)
+  object=predictAbundance(object,object@times) ##ERROR  TS not defined old code: object=predictAbundance(ts,object@times)
   ## Rescale for library size
   z=prop.table(object@simData,2)*expectedLibSize
   ind=1

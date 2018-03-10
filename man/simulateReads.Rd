@@ -4,7 +4,7 @@
 \alias{simulateReads}
 \title{Simulate Reads}
 \arguments{
-\item{object}{A kineticSim object}
+\item{object}{A kineticModel object}
 
 \item{expectedLibSize}{The expected library sequencing depth. May vary from this based on sampling.}
 
@@ -18,6 +18,7 @@
 Simulate Reads from kineticModel object
 }
 \examples{
-ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
-ts=calculateEquilibrium(ts)
+bkm = basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
+bkm = simulateData(bkm) #optional
+bkm = simulateReads(bkm,expectedLibSize=3,replicates=1,errorModel=function(x){rep(2,length(x))})
 }
