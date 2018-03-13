@@ -16,9 +16,9 @@ methods::setGeneric("simulateReads",signature=c('object','expectedLibSize','repl
 #' @examples
 #' bkm = basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 #' bkm = simulateData(bkm) #optional
-#' bkm = simulateReads(bkm,expectedLibSize=3,replicates=1,errorModel=function(x){rep(2,length(x))})
+#' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=1,errorModel=function(x){rep(2,length(x))})
 #' @export
-methods::setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,times=numeric(),errorModel=NULL) {
+methods::setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^3,replicates=2,numSpikeIns=4,times=numeric(),errorModel=NULL) {
   ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
   if(is.null(errorModel)){
     if(is.null(object@errorModel(1))){
@@ -42,19 +42,28 @@ methods::setMethod("simulateReads", signature(object = "kineticModel"),function(
     if(length(object@times) < 1){
       stop("times must be a numeric vector with at least one element if it is not already specified in the kineticModel object.")
     }
-  } else {
+  } else if(object@times[1]==0) {
+    stop("Cannot Have a timepoint of zero")
+    } else {
     object@times=times
   }
   ## Create a matrix of the appropriate size
-  simReads=matrix(nrow=length(object@synthRates),ncol=length(object@times)*replicates)
+  simReads=matrix(0,nrow=length(object@synthRates),ncol=length(object@times)*replicates)
+  spikeIns=matrix(0,ncol=length(object@times)*replicates,nrow=numSpikeIns)
   ## Get expected number of reads for each transcript
-  object=predictAbundance(object,object@times) ##ERROR  TS not defined old code: object=predictAbundance(ts,object@times)
+  object=predictAbundance(object,object@times)
+  temp=rbind(object@simData,matrix(200,nrow=numSpikeIns,ncol=ncol(object@simData)))
   ## Rescale for library size
-  z=prop.table(object@simData,2)*expectedLibSize
+  z=prop.table(temp,margin = 2)*expectedLibSize #prop.table(margin=2) => column percentages
   ind=1
   for(s in 1:ncol(z)){
-    for(tr in 1:nrow(z)){
+    for(tr in 1:nrow(object@simData)){
       simReads[tr,ind:(ind+replicates-1)]=rnbinom(n=replicates,size = object@errorModel(z[tr,s]),mu = z[tr,s])
+    }
+    ind.spike=1
+    for(tr in (nrow(object@simData)+1):nrow(z)){
+      spikeIns[ind.spike,ind:(ind+replicates-1)]=rnbinom(n=replicates,size = object@errorModel(z[tr,s]),mu = z[tr,s])
+      ind.spike=ind.spike+1
     }
     ind=ind+replicates
   }
@@ -62,6 +71,6 @@ methods::setMethod("simulateReads", signature(object = "kineticModel"),function(
   colnames(simReads)=paste0("time.",as.character(rep(object@times,each=replicates)))
   object@data=simReads
   object@expMetadata=data.frame(time=rep(object@times,each=replicates))
-  object@sizeFactors=colSums(object@data)/max(colSums(object@data)) ## used trimmed mean as default
+  object@sizeFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FNISH
   return(object)
 })
