@@ -20,8 +20,9 @@ setGeneric("inferParameters", function(object) standardGeneric("inferParameters"
 setMethod("inferParameters", signature(object="basicKineticModel"), function(object)
 {
   ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
+  errorModel = object@errorModel
   if(is.null(errorModel)){
-    if(is.null(object@errorModel(1))){
+    if(is.null(errorModel(1))){
       stop("There is no pre-specified error model for this object so an error model must be provided.")
     }
   } else if(is.function(errorModel)){
@@ -51,36 +52,68 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     }
   }
+  if(object@times[1]==0)
+    stop("Cannot have a time point of zero")
+  # negbinomNLL = function(obs,times,initVals,FINISH)
+  # {
+  #
+  # }
 
-  negbinomNLL = function(obs,times,initVals,FINISH)
+  ##temp test for one gene
+  nllFactory = function(object,geneIdx)
   {
+    obs = object@data[geneIdx,] #-1 to remove NaN at 0 from read simulation function
+    time=object@times
+    initVal = object@initVals[geneIdx]
 
-  }
-
-  geneNLL = function(params=c(alpha,beta),time,initVals,obs)
-  {
-    #define model of theoretical data
-    getAbund = function(alpha=params[1],beta=params[2],time,initVal)
+    getAbund = function(alpha,beta,time,initVal)
     {
       return(exp(-time * beta) * (initVal - alpha / beta) + alpha / beta)
     }
 
-    #define size function (dispersion function)
     dispersion = function(mu)
     {
-      ##TODO
+      return(rep(2,length(mu))) #cluge
     }
 
-    expMu = getAbund(alpha,beta,time,initVal)
-    logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
-    return(-sum(logProb))
+    return(function(params)
+    {
+      expMu = getAbund(params[1],params[2],time,initVal)
+      # print(expMu)
+      logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
+      # print(logProb)
+      return(-sum(logProb,na.rm=T)) #currently generating NaN for t=0
+    })
   }
 
+  # geneNLL = function(params=c(alpha,beta),time,initVals,obs)
+  # {
+  #   #define model of theoretical data
+  #   getAbund = function(alpha=params[1],beta=params[2],time,initVal)
+  #   {
+  #     return(exp(-time * beta) * (initVal - alpha / beta) + alpha / beta)
+  #   }
+  #
+  #   #define size function (dispersion function)
+  #   dispersion = function(mu)
+  #   {
+  #     ##TODO
+  #   }
+  #
+  #   expMu = getAbund(alpha,beta,time,initVal)
+  #   logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
+  #   return(-sum(logProb))
+  # }
+
   # optimize(geneNLL)
+  testNLL = nllFactory(object,10)
+  optim(par=c(1,0.2),fn=testNLL,method="L-BFGS-B",lower = c(10^-5,10^-5), upper=c(Inf,1))
 })
 
-geneNLL <- function(synthesis.rate,degredation.rate,initVals,times,data){   #!!! why is there a function defined here? Globally accessable?
-  e.mu=exp(-degredation.rate*object@times)*(initVals-synthesis.rate/degredation.rate)+(synthesis.rate/degredation.rate)
-}
+test=inferParameters(bkm)
 
+# geneNLL <- function(synthesis.rate,degredation.rate,initVals,times,data){   #!!! why is there a function defined here? Globally accessable?
+#   e.mu=exp(-degredation.rate*object@times)*(initVals-synthesis.rate/degredation.rate)+(synthesis.rate/degredation.rate)
+# }
+#
 
