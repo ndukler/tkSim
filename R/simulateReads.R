@@ -1,7 +1,6 @@
-methods::setGeneric("simulateReads",signature=c('object','expectedLibSize','replicates','times','errorModel'),
-                    def = function(object,expectedLibSize=10^6,replicates=2,times=numeric(),errorModel=NULL) {
-  standardGeneric("simulateReads")
-})
+setGeneric("simulateReads",signature=c('object'),
+                    def = function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=numeric(),...) {
+  standardGeneric("simulateReads")})
 
 #' Simulate Reads
 #'
@@ -18,7 +17,7 @@ methods::setGeneric("simulateReads",signature=c('object','expectedLibSize','repl
 #' bkm = simulateData(bkm) #optional
 #' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=1,errorModel=function(x){rep(2,length(x))})
 #' @export
-methods::setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^3,replicates=2,numSpikeIns=4,spikeInSizes=NULL,times=numeric(),errorModel=NULL) {
+setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=numeric(),times=numeric(),errorModel=NULL){
   ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
   if(is.null(errorModel)){
     if(is.null(object@errorModel(1))){
@@ -73,6 +72,7 @@ methods::setMethod("simulateReads", signature(object = "kineticModel"),function(
   object@expMetadata = data.frame(time=rep(object@times,each=replicates))
   #OLD object@sizeFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FINISH
   ##normalize by first sample and then average per 'replicate'
+  object@spikeIns = spikeIns
   object@sizeFactors = colMeans(spikeIns/spikeIns[,1])
 
   return(object)
