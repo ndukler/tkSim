@@ -54,10 +54,6 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   }
   if(object@times[1]==0)
     stop("Cannot have a time point of zero")
-  # negbinomNLL = function(obs,times,initVals,FINISH)
-  # {
-  #
-  # }
 
   ##temp test for one gene
   nllFactory = function(object,geneIdx)
@@ -65,6 +61,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
     obs = object@data[geneIdx,] #-1 to remove NaN at 0 from read simulation function
     time=object@times
     initVal = object@initVals[geneIdx]
+    normFactors = object@sizeFactors
 
     getAbund = function(alpha,beta,time,initVal)
     {
@@ -78,7 +75,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
 
     return(function(params)
     {
-      expMu = getAbund(params[1],params[2],time,initVal)
+      expMu = getAbund(params[1],params[2],time,initVal)*normFactors
       # print(expMu)
       logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
       # print(logProb)
@@ -86,31 +83,11 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
     })
   }
 
-  # geneNLL = function(params=c(alpha,beta),time,initVals,obs)
-  # {
-  #   #define model of theoretical data
-  #   getAbund = function(alpha=params[1],beta=params[2],time,initVal)
-  #   {
-  #     return(exp(-time * beta) * (initVal - alpha / beta) + alpha / beta)
-  #   }
-  #
-  #   #define size function (dispersion function)
-  #   dispersion = function(mu)
-  #   {
-  #     ##TODO
-  #   }
-  #
-  #   expMu = getAbund(alpha,beta,time,initVal)
-  #   logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
-  #   return(-sum(logProb))
-  # }
-
-  # optimize(geneNLL)
-  testNLL = nllFactory(object,10)
+  #optimize to find Max Likelyhood of params
+  testNLL = nllFactory(object,10) #temp test for one gene
   optim(par=c(1,0.2),fn=testNLL,method="L-BFGS-B",lower = c(10^-5,10^-5), upper=c(Inf,1))
 })
 
-test=inferParameters(bkm)
 
 # geneNLL <- function(synthesis.rate,degredation.rate,initVals,times,data){   #!!! why is there a function defined here? Globally accessable?
 #   e.mu=exp(-degredation.rate*object@times)*(initVals-synthesis.rate/degredation.rate)+(synthesis.rate/degredation.rate)
