@@ -27,6 +27,6 @@ checkBase <- function(object) {
 
 methods::setClass(Class = "kineticModel",
                   representation = representation(ids="character",times="numeric",simData="matrix",equlibVals="numeric",
-                                                  data="matrix",expMetadata="data.frame",sizeFactors="numeric",errorModel="function"),
+                                                  data="matrix",expMetadata="data.frame",sizeFactors="numeric",errorModel="function",spikeIns="matrix"),
                   prototype = methods::prototype(ids = NA_character_, times=NA_real_,equlibVals=NA_real_,errorModel=NULL),
                   validity = checkBase)
