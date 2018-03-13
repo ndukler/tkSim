@@ -18,7 +18,7 @@ methods::setGeneric("simulateReads",signature=c('object','expectedLibSize','repl
 #' bkm = simulateData(bkm) #optional
 #' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=1,errorModel=function(x){rep(2,length(x))})
 #' @export
-methods::setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^3,replicates=2,numSpikeIns=4,times=numeric(),errorModel=NULL) {
+methods::setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^3,replicates=2,numSpikeIns=4,spikeInSizes=NULL,times=numeric(),errorModel=NULL) {
   ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
   if(is.null(errorModel)){
     if(is.null(object@errorModel(1))){
@@ -52,25 +52,28 @@ methods::setMethod("simulateReads", signature(object = "kineticModel"),function(
   spikeIns=matrix(0,ncol=length(object@times)*replicates,nrow=numSpikeIns)
   ## Get expected number of reads for each transcript
   object=predictAbundance(object,object@times)
-  temp=rbind(object@simData,matrix(200,nrow=numSpikeIns,ncol=ncol(object@simData)))
+  temp=rbind(object@simData,matrix(spikeInSizes,nrow=numSpikeIns,ncol=ncol(object@simData)))
   ## Rescale for library size
   z=prop.table(temp,margin = 2)*expectedLibSize #prop.table(margin=2) => column percentages
-  ind=1
-  for(s in 1:ncol(z)){
+  indx=1
+  for(t in 1:ncol(z)){
     for(tr in 1:nrow(object@simData)){
-      simReads[tr,ind:(ind+replicates-1)]=rnbinom(n=replicates,size = object@errorModel(z[tr,s]),mu = z[tr,s])
+      simReads[tr, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@errorModel(z[tr,t]),mu = z[tr,t])
     }
-    ind.spike=1
+    spikeIndx=1
     for(tr in (nrow(object@simData)+1):nrow(z)){
-      spikeIns[ind.spike,ind:(ind+replicates-1)]=rnbinom(n=replicates,size = object@errorModel(z[tr,s]),mu = z[tr,s])
-      ind.spike=ind.spike+1
+      spikeIns[spikeIndx, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@errorModel(z[tr,t]),mu = z[tr,t])
+      spikeIndx = spikeIndx+1
     }
-    ind=ind+replicates
+    indx = indx+replicates
   }
-  rownames(simReads)=object@ids
-  colnames(simReads)=paste0("time.",as.character(rep(object@times,each=replicates)))
-  object@data=simReads
-  object@expMetadata=data.frame(time=rep(object@times,each=replicates))
-  object@sizeFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FNISH
+  rownames(simReads) = object@ids
+  colnames(simReads) = paste0("time_",as.character(rep(object@times,each=replicates)))
+  object@data = simReads
+  object@expMetadata = data.frame(time=rep(object@times,each=replicates))
+  #OLD object@sizeFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FINISH
+  ##normalize by first sample and then average per 'replicate'
+  object@sizeFactors = colMeans(spikeIns/spikeIns[,1])
+
   return(object)
 })
