@@ -1,4 +1,0 @@
-simData
-Col = time points
-rows = pairs of params == a gene/transcript
-
