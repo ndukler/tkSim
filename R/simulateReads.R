@@ -42,10 +42,13 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
       stop("times must be a numeric vector with at least one element if it is not already specified in the kineticModel object.")
     }
   } else if(object@times[1]==0) {
-    stop("Cannot Have a timepoint of zero")
+      stop("Cannot Have a timepoint of zero")
     } else {
     object@times=times
-  }
+    }
+  if(length(spikeInSizes)==0)
+    stop("Must specify the size of spike-ins.  May be a single number used for all spike-in transcripts or an array of abundances for each unique spike-in transcript.")
+
   ## Create a matrix of the appropriate size
   simReads=matrix(0,nrow=length(object@synthRates),ncol=length(object@times)*replicates)
   spikeIns=matrix(0,ncol=length(object@times)*replicates,nrow=numSpikeIns)
@@ -54,6 +57,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   temp=rbind(object@simData,matrix(spikeInSizes,nrow=numSpikeIns,ncol=ncol(object@simData)))
   ## Rescale for library size
   z=prop.table(temp,margin = 2)*expectedLibSize #prop.table(margin=2) => column percentages
+  print(z/expectedLibSize)
   indx=1
   for(t in 1:ncol(z)){
     for(tr in 1:nrow(object@simData)){
