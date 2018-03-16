@@ -56,10 +56,10 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
     stop("Cannot have a time point of zero")
 
   ##temp test for one gene
-  nllFactory = function(object,geneIdx)
+  nllFactory = function(geneIdx,object)
   {
     obs = object@data[geneIdx,] #-1 to remove NaN at 0 from read simulation function
-    time=object@times
+    time=object@expMetadata$time
     initVal = object@initVals[geneIdx]
     normFactors = object@sizeFactors
 
@@ -76,21 +76,27 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
     return(function(params)
     {
       expMu = getAbund(params[1],params[2],time,initVal)*normFactors
-      # print(expMu)
       logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
-      # print(logProb)
       return(-sum(logProb,na.rm=T)) #currently generating NaN for t=0
     })
   }
 
   #optimize to find Max Likelyhood of params
-  testNLL = nllFactory(object,10) #temp test for one gene
-  optim(par=c(1,0.2),fn=testNLL,method="L-BFGS-B",lower = c(10^-5,10^-5), upper=c(Inf,1))
+  nLL = lapply(X=1:nrow(object@data), FUN=nllFactory,object=object)
+  paramRes = lapply(X=nLL,FUN=function(x){
+              optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,1))
+            })
+  paramSummary = t(vapply(X=paramRes,FUN.VALUE=numeric(3),FUN=function(x){
+                  c(x$par,x$convergence)
+                }))
+  names(paramRes) = object@ids
+  colnames(paramSummary) = c("alpha","beta","errorCode")
+  rownames(paramSummary) = object@ids
+
+  object@inferenceResults = paramRes
+  object@inferedParams = paramSummary
+  invisible(object)
 })
 
 
-# geneNLL <- function(synthesis.rate,degredation.rate,initVals,times,data){   #!!! why is there a function defined here? Globally accessable?
-#   e.mu=exp(-degredation.rate*object@times)*(initVals-synthesis.rate/degredation.rate)+(synthesis.rate/degredation.rate)
-# }
-#
 
