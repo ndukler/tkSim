@@ -24,6 +24,7 @@ Collate:
     'inferParameters.R'
     'package.R'
     'plotAbundances.R'
+    'plotParameterFit.R'
     'predictAbundance.R'
     'simulateData.R'
     'simulateReads.R'
