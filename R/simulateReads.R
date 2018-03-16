@@ -57,7 +57,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   temp=rbind(object@simData,matrix(spikeInSizes,nrow=numSpikeIns,ncol=ncol(object@simData)))
   ## Rescale for library size
   z=prop.table(temp,margin = 2)*expectedLibSize #prop.table(margin=2) => column percentages
-  print(z/expectedLibSize)
+  # print(z/expectedLibSize)
   indx=1
   for(t in 1:ncol(z)){
     for(tr in 1:nrow(object@simData)){
@@ -72,6 +72,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   }
   rownames(simReads) = object@ids
   colnames(simReads) = paste0("time_",as.character(rep(object@times,each=replicates)))
+  rownames(simReads) = object@ids
   object@data = simReads
   object@expMetadata = data.frame(time=rep(object@times,each=replicates))
   #OLD object@sizeFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FINISH
