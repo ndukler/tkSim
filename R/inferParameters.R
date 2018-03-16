@@ -43,12 +43,12 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
       cat("\nNo simulated data detected. Will now attempt to generate simulated data\n")
       object = simulateData(object)
       cat("\nData simulation successful. Now attempting to simulate reads from data.\n")
-      object = simulateReads(object,expectedLibSize = 3,replicates = 1,errorModel=function(x){rep(2,length(x))}) #cludge
+      object = simulateReads(object,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,errorModel=function(x){rep(10^6,length(x))}) #cludge
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     } else {
 
       cat("\nNo read data detected. Will now attempt to simulate read data.\n")
-      object = simulateReads(object,expectedLibSize = 3,replicates = 1,errorModel=function(x){rep(2,length(x))}) #cludge
+      object = simulateReads(object,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,errorModel=function(x){rep(10^6,length(x))}) #cludge
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     }
   }
