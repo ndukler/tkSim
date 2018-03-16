@@ -7,7 +7,7 @@
 \usage{
 \S4method{simulateReads}{kineticModel}(object, expectedLibSize = 10^6,
   replicates = 2, numSpikeIns = 4, spikeInSizes = numeric(),
-  times = numeric(), errorModel = function(x) {     rep(1, length(x)) })
+  times = numeric(), errorModel = NULL)
 }
 \arguments{
 \item{object}{A kineticModel object}
