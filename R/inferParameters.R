@@ -52,8 +52,6 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     }
   }
-  if(object@times[1]==0)
-    stop("Cannot have a time point of zero")
 
   ##temp test for one gene
   nllFactory = function(geneIdx,object)
