@@ -1,5 +1,5 @@
 setGeneric("simulateReads",signature=c('object'),
-                    def = function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=numeric(),...) {
+                    def = function(object,...) {
   standardGeneric("simulateReads")})
 
 #' Simulate Reads
@@ -17,7 +17,7 @@ setGeneric("simulateReads",signature=c('object'),
 #' bkm = simulateData(bkm) #optional
 #' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=1,errorModel=function(x){rep(2,length(x))})
 #' @export
-setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=numeric(),times=numeric(),errorModel=NULL){
+setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=numeric(),errorModel=NULL){
   ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
   if(is.null(errorModel)){
     if(is.null(object@errorModel(1))){
@@ -41,11 +41,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
     if(length(object@times) < 1){
       stop("times must be a numeric vector with at least one element if it is not already specified in the kineticModel object.")
     }
-  } else if(object@times[1]==0) {
-      stop("Cannot Have a timepoint of zero")
-    } else {
-    object@times=times
-    }
+
   if(length(spikeInSizes)==0)
     stop("Must specify the size of spike-ins.  May be a single number used for all spike-in transcripts or an array of abundances for each unique spike-in transcript.")
 
