@@ -41,7 +41,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
     if(length(object@times) < 1){
       stop("times must be a numeric vector with at least one element if it is not already specified in the kineticModel object.")
     }
-
+  }
   if(length(spikeInSizes)==0)
     stop("Must specify the size of spike-ins.  May be a single number used for all spike-in transcripts or an array of abundances for each unique spike-in transcript.")
 
