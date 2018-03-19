@@ -24,10 +24,17 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
   colnames(fitData) = c("time","gene","value")
 
   plotData = reshape2::melt(object@data[geneIdx,])
+  print(head(plotData))
+  #plot data and fit
   plot = ggplot2::ggplot()
-  plot = plot+ggplot2::geom_line(data=fitData,aes(x=time,y=value,group=factor(gene)))+
-    ggplot2::geom_point(data=plotData,aes(x=as.numeric(gsub("time_","",Var2)),y=value,color=as.factor(Var1),group=as.factor(Var1)))+
-    cowplot::theme_cowplot()+
+  plot = plot+ggplot2::geom_line(data=fitData,aes(x=time,y=value,group=factor(gene)))
+  if(ncol(plotData)==1)
+  {
+    plot=plot+ggplot2::geom_point(data=plotData,aes(x=as.numeric(gsub("time_","",colnames(object@data))),y=value),colour="blue")
+  }else{
+    plot=plot+ggplot2::geom_point(data=plotData,aes(x=as.numeric(gsub("time_","",Var2)),y=value,color=as.factor(Var1),group=as.factor(Var1)))
+  }
+  plot=plot+cowplot::theme_cowplot()+
     ggplot2::xlab("Time")+
     ggplot2::ylab("Labeled Transcripts")
   if(legend)
@@ -36,6 +43,6 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
   }else{
     plot=plot+ggplot2::guides(color=FALSE)
   }
-  print(plot)
+  return(plot)
 })
 
