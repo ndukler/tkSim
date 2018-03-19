@@ -10,7 +10,7 @@
 #' @name basicKineticModel
 #' @include class-basicKineticModel.R
 #' @export
-basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_,initAbund=NA_real_,ids=NA,data=NULL,expMetadata=data.frame(),errorModel=function(x){} ){
+basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_,initAbund=NA_real_,ids=NA,data=NULL,expMetadata=data.frame(),dispersionModel=function(x){} ){
   if(length(initAbund) == 1 && is.na(initAbund))
     initAbund=rep(0,length(synthRate))
   if(length(ids) == 1 && is.na(ids))
@@ -18,5 +18,5 @@ basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_
   if(is.null(data))
     data=matrix(nrow=0,ncol=0)
   new("basicKineticModel",times=times,synthRates=synthRate,degRates=degRate,initVals=initAbund,ids=ids,expMetadata=expMetadata,
-      data=data,errorModel=errorModel)
+      data=data,dispersionModel=dispersionModel)
 }

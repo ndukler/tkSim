@@ -16,8 +16,8 @@ checkBase <- function(object) {
       }
     }
   }
-  if(!is.null(object@errorModel(1))){
-    if(length(object@errorModel(1:10))!=10){
+  if(!is.null(object@dispersionModel(1))){
+    if(length(object@dispersionModel(1:10))!=10){
       errors=c(errors,"The error model function must produce a vector of equal length to its input.")
     }
   }
@@ -27,7 +27,7 @@ checkBase <- function(object) {
 
 methods::setClass(Class = "kineticModel",
                   representation = representation(ids="character",times="numeric",simData="matrix",equlibVals="numeric",
-                                                  data="matrix",expMetadata="data.frame",sizeFactors="numeric",errorModel="function",spikeIns="matrix",
+                                                  data="matrix",expMetadata="data.frame",sizeFactors="numeric",dispersionModel="function",spikeIns="matrix",
                                                   inferenceResults="list",inferedParams="matrix"),
-                  prototype = methods::prototype(ids = NA_character_, times=NA_real_,equlibVals=NA_real_,errorModel=NULL),
+                  prototype = methods::prototype(ids = NA_character_, times=NA_real_,equlibVals=NA_real_,dispersionModel=NULL),
                   validity = checkBase)

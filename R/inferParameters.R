@@ -19,20 +19,20 @@ setGeneric("inferParameters", function(object) standardGeneric("inferParameters"
 
 setMethod("inferParameters", signature(object="basicKineticModel"), function(object)
 {
-  ## Check if an errorModel is needed. Then, if an error model is included, check for validity and update errorModel
-  errorModel = object@errorModel
-  if(is.null(errorModel)){
-    if(is.null(errorModel(1))){
+  ## Check if an dispersionModel is needed. Then, if an error model is included, check for validity and update dispersionModel
+  dispersionModel = object@dispersionModel
+  if(is.null(dispersionModel)){
+    if(is.null(dispersionModel(1))){
       stop("There is no pre-specified error model for this object so an error model must be provided.")
     }
-  } else if(is.function(errorModel)){
-    if(length(errorModel(1:10))==10 && is.numeric(errorModel(1:10))){
-      object@errorModel=errorModel #!!! Not permanent unless object is returned
+  } else if(is.function(dispersionModel)){
+    if(length(dispersionModel(1:10))==10 && is.numeric(dispersionModel(1:10))){
+      object@dispersionModel=dispersionModel #!!! Not permanent unless object is returned
     } else {
-      stop("errorModel function must produce a *numeric* vector of the same length as the input.")
+      stop("dispersionModel function must produce a *numeric* vector of the same length as the input.")
     }
   } else {
-    stop("errorModel must be function")
+    stop("dispersionModel must be function")
   }
   #predictAbundance(object,times=unique(object@expMetadata$time)) #!!! assumes first column will be named time
   if(nrow(object@data)==0) #data not present
@@ -43,12 +43,12 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
       cat("\nNo simulated data detected. Will now attempt to generate simulated data\n")
       object = simulateData(object)
       cat("\nData simulation successful. Now attempting to simulate reads from data.\n")
-      object = simulateReads(object,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,errorModel=function(x){rep(10^6,length(x))}) #cludge
+      object = simulateReads(object,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,dispersionModel=function(x){rep(10^6,length(x))}) #cludge
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     } else {
 
       cat("\nNo read data detected. Will now attempt to simulate read data.\n")
-      object = simulateReads(object,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,errorModel=function(x){rep(10^6,length(x))}) #cludge
+      object = simulateReads(object,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,dispersionModel=function(x){rep(10^6,length(x))}) #cludge
       cat("\nRead simulation sucessful. Now inferring parameters from simulated data.\n")
     }
   }
