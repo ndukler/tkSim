@@ -15,7 +15,7 @@ methods::setMethod("fitModel", signature(object = "basicKineticModel"), function
   ## Check if an dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
     if(is.null(object@dispersionModel(1))){
-      stop("There is no pre-specified kineticModel dispersion model so an dispersion model must be provided.")
+      stop("There is no pre-specified dispersion model so a dispersion model must be provided.")
     }
   } else if(is.function(dispersionModel)){
     if(length(dispersionModel(1:10))==10 && is.numeric(dispersionModel(1:10))){
