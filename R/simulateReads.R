@@ -18,10 +18,10 @@ setGeneric("simulateReads",signature=c('object'),
 #' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=1,dispersionModel=function(x){rep(2,length(x))})
 #' @export
 setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=numeric(),dispersionModel=NULL){
-  ## Check if an dispersionModel is needed. Then, if an error model is included, check for validity and update dispersionModel
+  ## Check if an dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
     if(is.null(object@dispersionModel(1))){
-      stop("There is no pre-specified kineticModel error model so an error model must be provided.")
+      stop("There is no pre-specified kineticModel dispersion model so an dispersion model must be provided.")
     }
   } else if(is.function(dispersionModel)){
     if(length(dispersionModel(1:10))==10 && is.numeric(dispersionModel(1:10))){

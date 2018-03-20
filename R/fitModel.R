@@ -4,7 +4,7 @@ methods::setGeneric("fitModel", function(object,dispersionModel) {
 
 #' Fits kinetic model
 #'
-#' Fits parameters for kinetic model given an error model (NOT IMPLEMENTED)
+#' Fits parameters for kinetic model given an dispersion model (NOT IMPLEMENTED)
 #' @param object A basicKineticModel object
 #' @param dispersionModel A function that takes predicted and observed values and computes the probability of the observation given the prediction
 #' @include  class-basicKineticModel.R
@@ -12,10 +12,10 @@ methods::setGeneric("fitModel", function(object,dispersionModel) {
 #' ts=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 #' @export
 methods::setMethod("fitModel", signature(object = "basicKineticModel"), function(object,dispersionModel) {
-  ## Check if an dispersionModel is needed. Then, if an error model is included, check for validity and update dispersionModel
+  ## Check if an dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
     if(is.null(object@dispersionModel(1))){
-      stop("There is no pre-specified kineticModel error model so an error model must be provided.")
+      stop("There is no pre-specified kineticModel dispersion model so an dispersion model must be provided.")
     }
   } else if(is.function(dispersionModel)){
     if(length(dispersionModel(1:10))==10 && is.numeric(dispersionModel(1:10))){

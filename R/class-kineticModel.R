@@ -18,7 +18,7 @@ checkBase <- function(object) {
   }
   if(!is.null(object@dispersionModel(1))){
     if(length(object@dispersionModel(1:10))!=10){
-      errors=c(errors,"The error model function must produce a vector of equal length to its input.")
+      errors=c(errors,"The dispersion model function must produce a vector of equal length to its input.")
     }
   }
   if (length(errors) == 0) TRUE else errors

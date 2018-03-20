@@ -10,6 +10,10 @@
 \arguments{
 \item{object}{A basicKineticModel object}
 }
+\value{
+Returns a basicKinetic model object containing the simulated data with any parameters
+overwritted by those supplied by the user.
+}
 \description{
 Simulates theoretical data based on given time points, synthesis rate, and degredation rate.
 }

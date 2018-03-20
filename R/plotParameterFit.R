@@ -18,12 +18,12 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
   #compute average normalization factors per time point
   times = object@expMetadata$time
   normFactor = sapply(unique(times),function(x,times,sizeFactors){mean(sizeFactors[which(times==x)])},times=times,sizeFactors=object@sizeFactors)
-  fitData = fitData*normFactor
+  # fitData = fitData*normFactor
   rownames(fitData) = object@times
   fitData = reshape2::melt(fitData)
   colnames(fitData) = c("time","gene","value")
 
-  plotData = reshape2::melt(object@data[geneIdx,])
+  plotData = reshape2::melt(object@data[geneIdx,]/object@sizeFactors)
   print(head(plotData))
   #plot data and fit
   plot = ggplot2::ggplot()

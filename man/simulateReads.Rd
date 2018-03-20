@@ -7,7 +7,7 @@
 \usage{
 \S4method{simulateReads}{kineticModel}(object, expectedLibSize = 10^6,
   replicates = 2, numSpikeIns = 4, spikeInSizes = numeric(),
-  times = numeric(), dispersionModel = NULL)
+  dispersionModel = NULL)
 }
 \arguments{
 \item{object}{A kineticModel object}
@@ -16,9 +16,9 @@
 
 \item{replicates}{Replicates per condition}
 
-\item{times}{A vector of times}
-
 \item{dispersionModel}{A function that takes in a vector of values and returns a vector of dispersions for a negative bionomial model}
+
+\item{times}{A vector of times}
 }
 \description{
 Simulate Reads from kineticModel object

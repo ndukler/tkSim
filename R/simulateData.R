@@ -3,9 +3,11 @@ setGeneric("simulateData", function(object) standardGeneric("simulateData"))
 #' Simulate Theoretical Data
 #'
 #' Simulates theoretical data based on given time points, synthesis rate, and degredation rate.
-#' @param object A basicKineticModel object
+#' @param object A \linkS4class{basicKineticModel} object
 #' @name simulateData
 #' @include  class-basicKineticModel.R
+#' @return  Returns a \linkS4class{basicKineticModel} object containing the simulated data with any parameters
+#' overwritten by those supplied by the user.
 #' @examples
 #' bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10), times=0:30)
 #' bkm=simulateData(bkm)

@@ -19,11 +19,11 @@ setGeneric("inferParameters", function(object) standardGeneric("inferParameters"
 
 setMethod("inferParameters", signature(object="basicKineticModel"), function(object)
 {
-  ## Check if an dispersionModel is needed. Then, if an error model is included, check for validity and update dispersionModel
+  ## Check if an dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   dispersionModel = object@dispersionModel
   if(is.null(dispersionModel)){
     if(is.null(dispersionModel(1))){
-      stop("There is no pre-specified error model for this object so an error model must be provided.")
+      stop("There is no pre-specified dispersion model for this object so an dispersion model must be provided.")
     }
   } else if(is.function(dispersionModel)){
     if(length(dispersionModel(1:10))==10 && is.numeric(dispersionModel(1:10))){
