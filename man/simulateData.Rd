@@ -8,11 +8,11 @@
 \S4method{simulateData}{basicKineticModel}(object)
 }
 \arguments{
-\item{object}{A basicKineticModel object}
+\item{object}{A \linkS4class{basicKineticModel} object}
 }
 \value{
-Returns a basicKinetic model object containing the simulated data with any parameters
-overwritted by those supplied by the user.
+Returns a \linkS4class{basicKineticModel} object containing the simulated data with any parameters
+overwritten by those supplied by the user.
 }
 \description{
 Simulates theoretical data based on given time points, synthesis rate, and degredation rate.

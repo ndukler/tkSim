@@ -6,22 +6,25 @@
 \title{Simulate Reads}
 \usage{
 \S4method{simulateReads}{kineticModel}(object, expectedLibSize = 10^6,
-  replicates = 2, numSpikeIns = 4, spikeInSizes = numeric(),
+  replicates = 2, numSpikeIns = 4, spikeInSizes = NULL,
   dispersionModel = NULL)
 }
 \arguments{
-\item{object}{A kineticModel object}
+\item{object}{A \linkS4class{kineticModel} object}
 
 \item{expectedLibSize}{The expected library sequencing depth. May vary from this based on sampling.}
 
 \item{replicates}{Replicates per condition}
 
-\item{dispersionModel}{A function that takes in a vector of values and returns a vector of dispersions for a negative bionomial model}
+\item{numSpikeIns}{The number of unique spike in transcripts used.}
 
-\item{times}{A vector of times}
+\item{spikeInSizes}{The expected number of reads for each type of spike in used. May be a single number used for all spike-in transcripts
+or an array of abundances for each unique spike-in transcript.}
+
+\item{dispersionModel}{A function that takes in a vector of means and returns a vector of dispersions based on those means for a negative bionomial model}
 }
 \description{
-Simulate Reads from kineticModel object
+Simulate reads from a \linkS4class{kineticModel} object. Will simulate data if the input \linkS4class{kineticModel} does not already contain simulated data.
 }
 \examples{
 bkm = basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
