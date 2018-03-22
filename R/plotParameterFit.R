@@ -12,7 +12,7 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
     return(exp(-time * beta) * (initVal - alpha / beta) + alpha / beta)
   }
 
-  fitData = mapply(getAbund,alpha=object@inferedParams[geneIdx,1],beta=object@inferedParams[geneIdx,2],initVal=object@initVals[geneIdx],MoreArgs = list(time=object@times))
+  fitData = mapply(getAbund,alpha=object@inferedParams[geneIdx,"alpha"],beta=object@inferedParams[geneIdx,"beta"],initVal=object@initVals[geneIdx],MoreArgs = list(time=object@times))
 
   colnames(fitData) = object@ids[geneIdx]
   #compute average normalization factors per time point
@@ -20,6 +20,7 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
   normFactor = sapply(unique(times),function(x,times,sizeFactors){mean(sizeFactors[which(times==x)])},times=times,sizeFactors=object@sizeFactors)
   # fitData = fitData*normFactor
   rownames(fitData) = object@times
+  # fitData = fitData*object@sizeFactors
   fitData = reshape2::melt(fitData)
   colnames(fitData) = c("time","gene","value")
 
@@ -27,12 +28,12 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
   print(head(plotData))
   #plot data and fit
   plot = ggplot2::ggplot()
-  plot = plot+ggplot2::geom_line(data=fitData,aes(x=time,y=value,group=factor(gene)))
+  plot = plot+ggplot2::geom_line(data=fitData,ggplot2::aes(x=time,y=value,group=factor(gene)))
   if(ncol(plotData)==1)
   {
-    plot=plot+ggplot2::geom_point(data=plotData,aes(x=as.numeric(gsub("time_","",colnames(object@data))),y=value),colour="blue")
+    plot=plot+ggplot2::geom_point(data=plotData,ggplot2::aes(x=as.numeric(gsub("time_","",colnames(object@data))),y=value),colour="blue")
   }else{
-    plot=plot+ggplot2::geom_point(data=plotData,aes(x=as.numeric(gsub("time_","",Var2)),y=value,color=as.factor(Var1),group=as.factor(Var1)))
+    plot=plot+ggplot2::geom_point(data=plotData,ggplot2::aes(x=as.numeric(gsub("time_","",Var2)),y=value,color=as.factor(Var1),group=as.factor(Var1)))
   }
   plot=plot+cowplot::theme_cowplot()+
     ggplot2::xlab("Time")+
