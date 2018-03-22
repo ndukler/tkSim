@@ -80,7 +80,7 @@ calculatePosteriors = function(object,alphaRange=numeric(2),paramSpaceSize=10^4,
 
       numerator = logLH[[x]](c(alpha,beta))+logProbAlpha(alpha)+logProbBeta(beta)
 
-      paramRange = expand.grid(seq(aMin,aMax,length.out = paramSpaceSize/2), seq(10^-5,1,length.out = paramSpaceSize/2))
+      paramRange = expand.grid(seq(aMin,aMax,length.out = sqrt(paramSpaceSize)), seq(10^-5,1,length.out = sqrt(paramSpaceSize)))
       marginal = logSumExp(logLH[[x]](c(paramRange[,1],paramRange[,2])) + logProbAlpha(paramRange[,1]) + logProbBeta(paramRange[,2]))
       posterior = exp(numerator-marginal)
     })
