@@ -47,7 +47,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
     stop("Must specify the size of spike-ins.  May be a single number (greater than 1) used for all spike-in transcripts or an array of abundances for each unique spike-in transcript.")
   if(length(object@times) < 1)
     stop("Times not specified. Time must be specified in the kineticModel object as a numeric vector with at least one element.")
-  if(lenth(object@synthRates)==0)
+  if(length(object@synthRates)==0)
       stop("Error: Synthesis or degredation rates not defined in kineticModel.")
 
 
