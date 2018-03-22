@@ -29,5 +29,5 @@ Simulate reads from a \linkS4class{kineticModel} object. Will simulate data if t
 \examples{
 bkm = basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
 bkm = simulateData(bkm) #optional
-bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=1,dispersionModel=function(x){rep(2,length(x))})
+bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))})
 }

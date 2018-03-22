@@ -18,7 +18,6 @@ Imports:
 Collate: 
     'class-kineticModel.R'
     'class-basicKineticModel.R'
-    'basicKineticModel.R'
     'calculateEquilibrium.R'
     'fitModel.R'
     'inferParameters.R'
