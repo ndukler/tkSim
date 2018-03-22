@@ -20,7 +20,7 @@ setMethod('simulateData',signature(object='basicKineticModel'),function(object)
   #calculate fractional label abundance for each pair of syn and deg rates over all time points
   ##OLD: X(t) = e^(-bt)*(X(0) - a/b) + a/b,   a=synrate b=degrate X(0)=x at time 0
   ##If X(0)=0, X(t) = a(1-e^(-bt))/b
-  if(is.na(object@times)==0)
+  if(is.na(object@times[1]))
   {
     stop("Error: Please set times in the basic kinetic model before running simulate data.")
   } else if(length(object@times) > 1)
