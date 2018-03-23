@@ -58,7 +58,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   if(length(object@simData) ==0)
   {
     cat("\nNo simulated data detected.  Simulating data before simulating reads.\n")
-    object=predictAbundance(object,object@times)
+    object=simulateData(object)
   }
 
   temp=rbind(object@simData,matrix(spikeInSizes,nrow=numSpikeIns,ncol=ncol(object@simData)))

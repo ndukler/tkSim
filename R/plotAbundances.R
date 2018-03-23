@@ -23,6 +23,6 @@ methods::setMethod("plotAbundances", signature(object = "kineticModel"), functio
       ggplot2::theme_classic()
     return(g)
   } else {
-    stop("Must run predictAbundance first.")
+    stop("Must run simulateData first.")
   }
 })

@@ -8,7 +8,7 @@ setGeneric("inferParameters", function(object) standardGeneric("inferParameters"
 #' before simulating read data and inferring parameters.
 #' @param object A \linkS4class{basicKineticModel} object
 #' @name inferParameters
-#' @include  class-basicKineticModel.R
+#' @include  class-basicKineticModel.R getAbund.R
 #' @examples
 #' bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10), times=0:30)
 #' bkm=simulateData(bkm) #optional
@@ -34,7 +34,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   } else {
     stop("dispersionModel must be function")
   }
-  #predictAbundance(object,times=unique(object@expMetadata$time)) #!!! assumes first column will be named time
+  
   if(nrow(object@data)==0) #data not present
   {
     cat("\nNo experimental data detected, will now attempt to use simulated data.\n")
@@ -56,7 +56,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   ##temp test for one gene
   nllFactory = function(geneIdx,object)
   {
-    obs = object@data[geneIdx,] #-1 to remove NaN at 0 from read simulation function
+    obs = object@data[geneIdx,]
     time=object@expMetadata$time
     initVal = object@initVals[geneIdx]
     normFactors = object@sizeFactors
@@ -100,6 +100,3 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   object@inferedParams = paramSummary
   invisible(object)
 })
-
-
-
