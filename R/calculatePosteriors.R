@@ -61,12 +61,12 @@ calculatePosteriors = function(object,alphaRange=numeric(2),paramSpaceSize=10^4,
     #global basis
     aMax = alphaRange[2]*max(object@inferedParams[,'alpha'])
     aMin = alphaRange[1]*min(object@inferedParams[,'alpha'])
-    logProbAlpha = function(x){-log(aMax-aMin)} #log(1/(aMax-aMin)) == -log(aMax-aMin)
+    logProbAlpha = function(x){rep(log(1/sqrt(paramSpaceSize)),length(x))} #log(1/(aMax-aMin)) == -log(aMax-aMin)
   }
 
   if(is.null(logProbBeta))
   {
-    logProbBeta = function(x){return(log(1))}
+    logProbBeta = function(x){rep(log(1),length(x))}
   }
 
   #generate likelyhood esitmators for each gene
@@ -78,11 +78,26 @@ calculatePosteriors = function(object,alphaRange=numeric(2),paramSpaceSize=10^4,
       aMax = alphaRange[2]*alpha
       aMin = alphaRange[1]*beta
 
-      numerator = logLH[[x]](c(alpha,beta))+logProbAlpha(alpha)+logProbBeta(beta)
+      # numerator = logLH[[x]](c(alpha,beta))+logProbAlpha(alpha)+logProbBeta(beta)
 
       paramRange = expand.grid(seq(aMin,aMax,length.out = sqrt(paramSpaceSize)), seq(10^-5,1,length.out = sqrt(paramSpaceSize)))
-      marginal = logSumExp(logLH[[x]](c(paramRange[,1],paramRange[,2])) + logProbAlpha(paramRange[,1]) + logProbBeta(paramRange[,2]))
+      numerator = apply(paramRange,1,function(y) logLH[[x]](y)) + logProbAlpha(paramRange[,1]) + logProbBeta(paramRange[,2])
+      marginal = logSumExp(numerator)
       posterior = exp(numerator-marginal)
+      foo=cbind(paramRange,posterior=posterior)
+      library(ggplot2)
+      library(viridis)
+      ggplot(foo,aes(x=Var1,y=Var2,fill=posterior))+geom_raster(interpolate = T)+scale_fill_viridis()+cowplot::theme_cowplot()
+      ##FINISH
+      # object=bkm
+      # paramSpaceSize=10^4
+      # logProbAlpha=NULL
+      # logProbBeta=NULL
+      # alphaRange = c(.25,2)
+      # >data.table::as.data.table(foo)[,sum(posterior),by=Var2]
+      # > plot(data.table::as.data.table(foo)[,sum(posterior),by=Var2]$V1)
+      # > plot(data.table::as.data.table(foo)[,sum(posterior),by=Var1]$V1)
+      # > plot(data.table::as.data.table(foo)[,sum(posterior),by=Var2]$V1)
     })
 
 }
