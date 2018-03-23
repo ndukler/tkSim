@@ -1,9 +1,11 @@
 setGeneric("plotParameterFit", function(object,...) standardGeneric("plotParameterFit"))
 
 #' @name plotParameterFit
+#' @param scaleData If true, will scale the data by it's corresponding normalization factors. If false, will scale the fit function by the average
+#' normalization factor across replicates for each time point.
 #' @include  class-kineticModel.R getAbund.R
 #' @export
-setMethod("plotParameterFit",signature(object="basicKineticModel"), function(object,geneIdx=NULL,legend=F){
+setMethod("plotParameterFit",signature(object="basicKineticModel"), function(object,geneIdx=NULL,legend=F,scaleData=T){
   if(is.null(geneIdx))
     geneIdx = nrow(object@data)
 
