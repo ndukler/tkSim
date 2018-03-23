@@ -1,30 +1,25 @@
 setGeneric("plotParameterFit", function(object,...) standardGeneric("plotParameterFit"))
 
 #' @name plotParameterFit
-#' @include  class-kineticModel.R
+#' @include  class-kineticModel.R getAbund.R
 #' @export
 setMethod("plotParameterFit",signature(object="basicKineticModel"), function(object,geneIdx=NULL,legend=F){
   if(is.null(geneIdx))
     geneIdx = nrow(object@data)
-
-  getAbund = function(alpha,beta,time,initVal)
-  {
-    return(exp(-time * beta) * (initVal - alpha / beta) + alpha / beta)
-  }
 
   fitData = mapply(getAbund,alpha=object@inferedParams[geneIdx,"alpha"],beta=object@inferedParams[geneIdx,"beta"],initVal=object@initVals[geneIdx],MoreArgs = list(time=object@times))
 
   colnames(fitData) = object@ids[geneIdx]
   #compute average normalization factors per time point
   times = object@expMetadata$time
-  normFactor = sapply(unique(times),function(x,times,sizeFactors){mean(sizeFactors[which(times==x)])},times=times,sizeFactors=object@sizeFactors)
+  normFactor = sapply(unique(times),function(x,times,normFactors){mean(normFactors[which(times==x)])},times=times,normFactors=object@normFactors)
   # fitData = fitData*normFactor
   rownames(fitData) = object@times
-  # fitData = fitData*object@sizeFactors
+  # fitData = fitData*object@normFactors
   fitData = reshape2::melt(fitData)
   colnames(fitData) = c("time","gene","value")
 
-  plotData = reshape2::melt(object@data[geneIdx,]/object@sizeFactors)
+  plotData = reshape2::melt(object@data[geneIdx,]/object@normFactors)
   print(head(plotData))
   #plot data and fit
   plot = ggplot2::ggplot()

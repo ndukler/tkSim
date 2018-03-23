@@ -22,6 +22,7 @@ Collate:
     'calculatePosteriors.R'
     'getAbund.R'
     'inferParameters.R'
+    'nllFactory.R'
     'package.R'
     'plotAbundances.R'
     'plotParameterFit.R'

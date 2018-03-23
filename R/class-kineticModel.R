@@ -7,11 +7,11 @@ checkBase <- function(object) {
     if(ncol(object@data)!=nrow(object@expMetadata)){
       errors=c(errors,"There must be the same number of rows in the design table as there are columns in the data matrix")
     }
-    if(length(object@sizeFactors)>0){
-      if(length(object@sizeFactors)!= ncol(object@data)){
+    if(length(object@normFactors)>0){
+      if(length(object@normFactors)!= ncol(object@data)){
         errors=c(errors,"There must be the same number of size factors as there are columns in the data matrix.")
       }
-      if(!is.numeric(object@sizeFactors)){
+      if(!is.numeric(object@normFactors)){
         errors=c(errors,"The size factors must be numeric.")
       }
     }
@@ -27,7 +27,7 @@ checkBase <- function(object) {
 
 methods::setClass(Class = "kineticModel",
                   representation = representation(ids="character",times="numeric",simData="matrix",equlibVals="numeric",
-                                                  data="matrix",expMetadata="data.frame",sizeFactors="numeric",dispersionModel="function",spikeIns="matrix",
+                                                  data="matrix",expMetadata="data.frame",normFactors="numeric",dispersionModel="function",spikeIns="matrix",
                                                   inferenceResults="list",inferedParams="matrix"),
                   prototype = methods::prototype(ids = NA_character_, times=NA_real_,equlibVals=NA_real_,dispersionModel=NULL),
                   validity = checkBase)

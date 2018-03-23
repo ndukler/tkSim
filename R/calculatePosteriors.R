@@ -22,31 +22,6 @@ calculatePosteriors = function(object,alphaRange=numeric(2),paramSpaceSize=10^4,
     return(a+log(sum(exp(x-a))))
   }
 
-  logLFactory = function(geneIdx,object)
-  {
-    obs = object@data[geneIdx,] #-1 to remove NaN at 0 from read simulation function
-    time=object@expMetadata$time
-    initVal = object@initVals[geneIdx]
-    normFactors = object@sizeFactors
-
-    getAbund = function(alpha,beta,time,initVal)
-    {
-      return(exp(-time * beta) * (initVal - alpha / beta) + alpha / beta)
-    }
-
-    dispersion = function(mu)
-    {
-      return(rep(2,length(mu))) #cluge
-    }
-
-    return(function(params)
-    {
-      expMu = getAbund(params[1],params[2],time,initVal)*normFactors
-      logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
-      return(sum(logProb,na.rm=T))
-    })
-  }
-
   if(is.null(logProbAlpha))
   {
     # #defined as 1/(max(a)-min(a)) on a per-gene basis
@@ -70,7 +45,7 @@ calculatePosteriors = function(object,alphaRange=numeric(2),paramSpaceSize=10^4,
   }
 
   #generate likelyhood esitmators for each gene
-  logLH = lapply(X=1:nrow(object@inferedParams), FUN=logLFactory,object=object)
+  logLH = lapply(X=1:nrow(object@inferedParams), FUN=llFactory, object=object)
   posteriors = lapply(X=1:nrow(object@inferedParams),object=object,logLH=logLH,FUN=function(x,object,logLH)
     {
       alpha = object@inferedParams[x,"alpha"]

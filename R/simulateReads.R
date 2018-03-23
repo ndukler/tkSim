@@ -1,6 +1,4 @@
-setGeneric("simulateReads",signature=c('object'),
-                    def = function(object,...) {
-  standardGeneric("simulateReads")})
+setGeneric("simulateReads",signature=c('object'),def = function(object,...) {standardGeneric("simulateReads")})
 
 #' Simulate Reads
 #'
@@ -82,10 +80,10 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   rownames(simReads) = object@ids
   object@data = simReads
   object@expMetadata = data.frame(time=rep(object@times,each=replicates))
-  #OLD object@sizeFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FINISH
+  #OLD object@normFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FINISH
   ##normalize by first sample and then average per 'replicate'
   object@spikeIns = spikeIns
-  object@sizeFactors = colMeans(spikeIns/spikeIns[,1])
+  object@normFactors = colMeans(spikeIns/spikeIns[,1])
 
   return(object)
 })
