@@ -31,8 +31,8 @@ checkBasic <- function(object) {
 #' @include class-kineticModel.R
 #' @exportClass basicKineticModel
 methods::setClass(Class = "basicKineticModel",
-                  representation = representation(initVals = "numeric", synthRates = "numeric",degRates="numeric"),
-                  prototype = methods::prototype(initVals = NA_real_,synthRates = NA_real_,degRates=NA_real_),
+                  representation = representation(initVals = "numeric", synthRates = "numeric",degRates="numeric",posteriors="list"),
+                  prototype = methods::prototype(initVals = NA_real_,synthRates = NA_real_,degRates=NA_real_,posteriors=list()),
                   validity = checkBasic,contains="kineticModel")
 
 
@@ -47,7 +47,7 @@ methods::setClass(Class = "basicKineticModel",
 #' @param expMetadata A data.frame where each row corresponds to the column in data with the same index and the columns are different properties
 #' @name basicKineticModel
 #' @export
-basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_,initAbund=NA_real_,ids=NA,data=NULL,expMetadata=data.frame(),dispersionModel=function(x){} ){
+basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_,initAbund=NA_real_,ids=NA,data=NULL,expMetadata=data.frame(),dispersionModel=function(x){}){
   if(length(initAbund) == 1 && is.na(initAbund))
     initAbund=rep(0,length(synthRate))
   if(length(ids) == 1 && is.na(ids))

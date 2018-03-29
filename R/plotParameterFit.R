@@ -1,7 +1,14 @@
 setGeneric("plotParameterFit", function(object,...) standardGeneric("plotParameterFit"))
 
+#' Plot Data Against the Fit Parameters
+#'
+#' Plot the curve defined by the estimated parameters against the raw data for a selected set of genes
 #' @name plotParameterFit
-#' @param scaleData If true, will scale the data by it's corresponding normalization factors. If false, will scale the fit function by the average
+#'
+#' @param object A \linkS4class{basicKineticModel} object
+#' @param geneIdx The row index from \code{@@data} of the gene to plot. May be defined as an integer for one gene or a vector for multiple genes.
+#' @param legend Boolean controlling if the plot should contain a legend.
+#' @param scaleData If true, will scale the data by a given genes's corresponding normalization factors. If false, will scale the fit function by the average
 #' normalization factor across replicates for each time point.
 #' @include  class-kineticModel.R getAbund.R
 #' @export
@@ -14,15 +21,22 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
   colnames(fitData) = object@ids[geneIdx]
   #compute average normalization factors per time point
   times = object@expMetadata$time
-  normFactor = sapply(unique(times),function(x,times,normFactors){mean(normFactors[which(times==x)])},times=times,normFactors=object@normFactors)
-  # fitData = fitData*normFactor
+  if(!scaleData)
+  {
+    fitNormFactors = sapply(unique(times),function(x,times,normFactors){mean(normFactors[which(times==x)])},times=times,normFactors=object@normFactors)
+    fitData = fitData*fitNormFactors
+  }
   rownames(fitData) = object@times
-  # fitData = fitData*object@normFactors
   fitData = reshape2::melt(fitData)
   colnames(fitData) = c("time","gene","value")
 
-  plotData = reshape2::melt(object@data[geneIdx,]/object@normFactors)
-  print(head(plotData))
+  if(scaleData)
+  {
+    plotData = reshape2::melt(object@data[geneIdx,]/object@normFactors)
+  }else{
+    plotData = reshape2::melt(object@data[geneIdx,])
+  }
+
   #plot data and fit
   plot = ggplot2::ggplot()
   plot = plot+ggplot2::geom_line(data=fitData,ggplot2::aes(x=time,y=value,group=factor(gene)))

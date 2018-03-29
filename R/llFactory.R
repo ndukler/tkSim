@@ -7,7 +7,7 @@ llFactory = function(geneIdx,object)
   time=object@expMetadata$time
   initVal = object@initVals[geneIdx]
   normFactors = object@normFactors
-  dispersion = object@dispersionModel()
+  dispersion = object@dispersionModel
 
   return(function(params)
   {

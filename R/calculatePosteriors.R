@@ -1,3 +1,5 @@
+setGeneric("calculatePosteriors", function(object, alphaRange,...) standardGeneric("calculatePosteriors"))
+
 #' Calculate Posterior Probabilities for Infered Parameters
 #'
 #' Uses numeric methods to estimate posteriors for the infered parameters \code{alpha} (synthesis rate) and \code{beta} (degredation rate).
@@ -5,21 +7,22 @@
 #' @param object A \linkS4class{basicKineticModel} object
 #' @param alphaRange Scale factors used to calculate the upper and lower bounds of the parameter range explored for \code{alpha}.  These scale factors will
 #' be applied to the infered value of \code{alpha}.  Must be defined as \code{c(lower,upper)}.
+#' @param betaRange Scale factors used to calculate the upper and lower bounds of the parameter range explored for \code{beta}.  These scale factors will
+#' be applied to the infered value of \code{beta}.  Must be defined as \code{c(lower,upper)}.
 #' @param paramSpaceSize The total size of parameter space to numerically integrate over. Half of the parameter space will be given to each parameter.
 #' @param logProbAlpha  A function that returns the log probability for a given value of \code{alpha}
 #' @param lobProbBeta A function that returns the log probability for a given value of \code{beta}
 #'
 #' @name calculatePosteriors
-#' @include  class-basicKineticModel.R
+#' @include  class-basicKineticModel.R llFactory.R logSumExp.R
 #' @examples
 #' EXAMPLE HERE
 #' @export
-calculatePosteriors = function(object,alphaRange=numeric(2),paramSpaceSize=10^4,logProbAlpha=NULL,logProbBeta=NULL)
+setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(object,alphaRange=numeric(2),betaRange=numeric(2),paramSpaceSize=10^4,logProbAlpha=NULL,logProbBeta=NULL)
 {
-  logSumExp = function(x)
+  if(alphaRange[1]==0)
   {
-    a = max(x)
-    return(a+log(sum(exp(x-a))))
+    stop("Must enter a range for alpha. It should be in the form c(lower,upper) where lower and upper are multipliers that are applied to the inferred parameter to calculate the bounds")
   }
 
   if(is.null(logProbAlpha))
@@ -47,33 +50,22 @@ calculatePosteriors = function(object,alphaRange=numeric(2),paramSpaceSize=10^4,
   #generate likelyhood esitmators for each gene
   logLH = lapply(X=1:nrow(object@inferedParams), FUN=llFactory, object=object)
   posteriors = lapply(X=1:nrow(object@inferedParams),object=object,logLH=logLH,FUN=function(x,object,logLH)
-    {
-      alpha = object@inferedParams[x,"alpha"]
-      beta = object@inferedParams[x,"beta"]
-      aMax = alphaRange[2]*alpha
-      aMin = alphaRange[1]*beta
+  {
+    alpha = object@inferedParams[x,"alpha"]
+    beta = object@inferedParams[x,"beta"]
+    aMax = alphaRange[2]*alpha
+    aMin = alphaRange[1]*alpha
 
-      # numerator = logLH[[x]](c(alpha,beta))+logProbAlpha(alpha)+logProbBeta(beta)
+    paramRange = expand.grid(seq(aMin,aMax,length.out = sqrt(paramSpaceSize)), seq(10^-5,1,length.out = sqrt(paramSpaceSize)))
+    numerator = apply(paramRange,1,function(y) logLH[[x]](y)) + logProbAlpha(paramRange[,1]) + logProbBeta(paramRange[,2])
+    marginal = logSumExp(numerator)
+    posterior = exp(numerator-marginal)
+    res=cbind(paramRange,posterior=posterior)
+    colnames(res) = c("alpha","beta","posterior")
+    return(res)
+  })
+  object@posteriors = posteriors
+  invisible(object)
+})
 
-      paramRange = expand.grid(seq(aMin,aMax,length.out = sqrt(paramSpaceSize)), seq(10^-5,1,length.out = sqrt(paramSpaceSize)))
-      numerator = apply(paramRange,1,function(y) logLH[[x]](y)) + logProbAlpha(paramRange[,1]) + logProbBeta(paramRange[,2])
-      marginal = logSumExp(numerator)
-      posterior = exp(numerator-marginal)
-      foo=cbind(paramRange,posterior=posterior)
-      library(ggplot2)
-      library(viridis)
-      ggplot(foo,aes(x=Var1,y=Var2,fill=posterior))+geom_raster(interpolate = T)+scale_fill_viridis()+cowplot::theme_cowplot()
-      ##FINISH
-      # object=bkm
-      # paramSpaceSize=10^4
-      # logProbAlpha=NULL
-      # logProbBeta=NULL
-      # alphaRange = c(.25,2)
-      # >data.table::as.data.table(foo)[,sum(posterior),by=Var2]
-      # > plot(data.table::as.data.table(foo)[,sum(posterior),by=Var2]$V1)
-      # > plot(data.table::as.data.table(foo)[,sum(posterior),by=Var1]$V1)
-      # > plot(data.table::as.data.table(foo)[,sum(posterior),by=Var2]$V1)
-    })
-
-}
 

@@ -1,8 +1,15 @@
 ##Package Test File
 library(tkSim)
+source('~/Documents/GitHub/tkSim/R/llFactory.R')
+source('~/Documents/GitHub/tkSim/R/logSumExp.R')
+source('~/Documents/GitHub/tkSim/R/nllFactory.R')
+source('~/Documents/GitHub/tkSim/R/getAbund.R')
 bkm=basicKineticModel(times=0:30,synthRate=1:10,degRate = rep(0.5,10))
 bkm=simulateData(bkm)
 bkm=simulateReads(bkm,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,dispersionModel=function(x){rep(10^3,length(x))}) #CLUGE
 bkm=inferParameters(bkm)
 plotParameterFit(bkm,geneIdx=1:3)
+bkm=calculatePosteriors(bkm,alphaRange=c(.25,2))
+plotPosteriors(bkm,3)
+plotPosteriors(object=bkm,geneIdx=3,alphaRange=c(3000,4500),betaRange=c(.45,.55),relative=F,recalculate=T,paramSpaceSize=10^5)
 # print(test$par[1]/test$par[2])
