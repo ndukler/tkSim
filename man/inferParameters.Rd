@@ -5,7 +5,8 @@
 \alias{inferParameters}
 \title{Infer Parameters from Read Data}
 \usage{
-\S4method{inferParameters}{basicKineticModel}(object, dispersionModel = NULL)
+\S4method{inferParameters}{basicKineticModel}(object, dispersionModel = NULL,
+  dispByGene = T)
 }
 \arguments{
 \item{object}{A \linkS4class{basicKineticModel} object}
@@ -19,6 +20,6 @@ before simulating read data and inferring parameters.
 \examples{
 bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10), times=0:30)
 bkm=simulateData(bkm) #optional
-bkm=simulateReads(bkm) #optional
+bkm=simulateReads(bkm)
 bkm=inferParameters(bkm)
 }

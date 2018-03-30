@@ -7,7 +7,7 @@
 \usage{
 \S4method{calculatePosteriors}{basicKineticModel}(object,
   alphaRange = numeric(2), betaRange = numeric(2), paramSpaceSize = 10^4,
-  logProbAlpha = NULL, logProbBeta = NULL)
+  dispByGene = T, logProbAlpha = NULL, logProbBeta = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{basicKineticModel} object}

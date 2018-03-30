@@ -7,12 +7,13 @@
 \usage{
 \S4method{simulateReads}{kineticModel}(object, expectedLibSize = 10^6,
   replicates = 2, numSpikeIns = 4, spikeInSizes = NULL,
-  dispersionModel = NULL)
+  dispersionModel = NULL, dispByGene = T)
 }
 \arguments{
 \item{object}{A \linkS4class{kineticModel} object}
 
-\item{expectedLibSize}{The expected library sequencing depth. May vary from this based on sampling.}
+\item{expectedLibSize}{The expected total number of reads per sequencing run/batch. May be supplied as a single number which will be applied uniformly,
+or a vector of library sizes where each element corresponds to the library depth at a given time point.}
 
 \item{replicates}{Replicates per condition}
 
