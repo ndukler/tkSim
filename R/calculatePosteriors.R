@@ -18,7 +18,7 @@ setGeneric("calculatePosteriors", function(object, alphaRange,...) standardGener
 #' @examples
 #' EXAMPLE HERE
 #' @export
-setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(object,alphaRange=numeric(2),betaRange=numeric(2),paramSpaceSize=10^4,logProbAlpha=NULL,logProbBeta=NULL)
+setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(object,alphaRange=numeric(2),betaRange=numeric(2),paramSpaceSize=10^4,dispByGene=T,logProbAlpha=NULL,logProbBeta=NULL)
 {
   if(alphaRange[1]==0)
   {
@@ -48,7 +48,7 @@ setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(
   }
 
   #generate likelyhood esitmators for each gene
-  logLH = lapply(X=1:nrow(object@inferedParams), FUN=llFactory, object=object)
+  logLH = lapply(X=1:nrow(object@inferedParams), FUN=llFactory, object=object,dispByGene=dispByGene)
   posteriors = lapply(X=1:nrow(object@inferedParams),object=object,logLH=logLH,FUN=function(x,object,logLH)
   {
     alpha = object@inferedParams[x,"alpha"]

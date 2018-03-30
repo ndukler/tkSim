@@ -8,7 +8,6 @@ setGeneric("simulateReads",signature=c('object'),def = function(object,...) {sta
 #' @param object A \linkS4class{kineticModel} object
 #' @param expectedLibSize The expected total number of reads per sequencing run/batch. May be supplied as a single number which will be applied uniformly,
 #' or a vector of library sizes where each element corresponds to the library depth at a given time point.
-#' where \code{i} is the \code{ith} time point
 #' @param replicates Replicates per condition
 #' @param numSpikeIns The number of unique spike in transcripts used.
 #' @param spikeInSizes The expected number of reads for each type of spike in used. May be a single number used for all spike-in transcripts

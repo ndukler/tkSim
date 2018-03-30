@@ -136,7 +136,7 @@ setMethod("plotPosteriors", signature(object="basicKineticModel",geneIdx="numeri
     }
 
     #recalculate posteriors for this gene using newly defined bounds
-    logLH = llFactory(geneIdx,object)
+    logLH = llFactory(geneIdx,object,params$dispByGene)
     paramRange = expand.grid(seq(aMin,aMax,length.out = sqrt(paramSpaceSize)), seq(bMin,bMax,length.out = sqrt(paramSpaceSize)))
     numerator = apply(paramRange,1,function(y) logLH(y)) + logProbAlpha(paramRange[,1]) + logProbBeta(paramRange[,2])
     marginal = logSumExp(numerator)
