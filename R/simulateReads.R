@@ -1,10 +1,14 @@
 setGeneric("simulateReads",signature=c('object'),def = function(object,...) {standardGeneric("simulateReads")})
 
+##TODO:  Update to allow for multiple library Sizes at different time points
+
 #' Simulate Reads
 #'
 #' Simulate reads from a \linkS4class{kineticModel} object. Will simulate data if the input \linkS4class{kineticModel} does not already contain simulated data.
 #' @param object A \linkS4class{kineticModel} object
-#' @param expectedLibSize The expected library sequencing depth. May vary from this based on sampling.
+#' @param expectedLibSize The expected total number of reads per sequencing run/batch. May be supplied as a single number which will be applied uniformly,
+#' or a vector of library sizes where each element corresponds to the library depth at a given time point.
+#' where \code{i} is the \code{ith} time point
 #' @param replicates Replicates per condition
 #' @param numSpikeIns The number of unique spike in transcripts used.
 #' @param spikeInSizes The expected number of reads for each type of spike in used. May be a single number used for all spike-in transcripts
@@ -35,8 +39,10 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
     stop("dispersionModel must be function")
   }
   ## Check all the other arguments
-  if(!is.numeric(expectedLibSize) && length(expectedLibSize)==1)
+  if(!is.numeric(expectedLibSize))
     stop("lib.size must be a numeric of length one")
+  else if(length(expectedLibSize)!=1 && length(expectedLibSize)!=length(object@times))
+    stop("Error: expectedLibSize must either be a single value or a vector of equal length to object@times")
   if(!is.numeric(replicates) || replicates < 1)
     stop("replicates must be an integer greater than 1")
   if(!is.numeric(numSpikeIns) || numSpikeIns < 1)
@@ -61,8 +67,11 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
 
   temp=rbind(object@simData,matrix(spikeInSizes,nrow=numSpikeIns,ncol=ncol(object@simData)))
   ## Rescale for library size
-  z=prop.table(temp,margin = 2)*expectedLibSize #prop.table(margin=2) => column percentages
-  # print(z/expectedLibSize)
+  if(length(expectedLibSize)==1)
+    z=prop.table(temp,margin = 2)*expectedLibSize #prop.table(margin=2) => column percentages
+  else
+    z=prop.table(temp,margin = 2)%*%diag(expectedLibSize) #multiply each col of Z by the coresponding element in the els vector
+
   if(dispByGene)
   {
     indx=1
