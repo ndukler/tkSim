@@ -7,12 +7,16 @@ setGeneric("inferParameters", function(object,...) standardGeneric("inferParamet
 #' will be generated using simulation data stored in \code{@@simData} before parameter inference. If no simulated data exists, it will be generated
 #' before simulating read data and inferring parameters.
 #' @param object A \linkS4class{basicKineticModel} object
+#' @param dispersionModel  A disperson model to use for inference. If not specified, the dispersion model stored in \code{object} will be used instead.
+#' Must be specified as a function of the gene being analized if \code{dispByGene = TRUE} or as a function of the mean of the distribution if \code{dispByGene = FALSE}.
+#' See the return values of \code{\link{estimateDispersions}} for examples of these two kinds of functions.
 #' @name inferParameters
 #' @include  class-basicKineticModel.R getAbund.R nllFactory.R
 #' @examples
 #' bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10), times=0:30)
 #' bkm=simulateData(bkm) #optional
 #' bkm=simulateReads(bkm)
+#' bkm@dispersionModel = estimateDispersions(bkm,byGene=T)
 #' bkm=inferParameters(bkm)
 #' @export
 #'
@@ -22,7 +26,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   ## Check if an dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
     if(is.null(object@dispersionModel(1))){
-      stop("There is no pre-specified dispersion model for this object so an dispersion model must be provided.")
+      stop("There is no pre-specified dispersion model for this object so a dispersion model must be provided.")
     }
   } else if(is.function(dispersionModel)){
     if(length(dispersionModel(1:10))==10 && is.numeric(dispersionModel(1:10))){

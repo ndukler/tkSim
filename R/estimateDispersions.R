@@ -9,15 +9,16 @@ setGeneric("estimateDispersions",function(object,...) standardGeneric("estimateD
 #'@param object A \linkS4class{basicKineticModel} object
 #'@param byGene Boolean controlling fuction return value. See \code{description} or \code{value} for more information
 #'
-#'@return UPDATE ME:::::::If \code{byGene = TRUE} then a vector containing a single dispersion
-#'estimate for each gene will be returned. If \code{FALSE} then a general function will be returned that gives a dispersion estimate
-#'for a given mean using the composite information from all genes, time points, and replicates.
+#'@return If \code{byGene = TRUE} then a function that takes a gene index and returns a single dispersion
+#'estimate for that gene. If \code{FALSE} then a general function will be returned that gives a dispersion estimate
+#'for a given read value (assumed to be the mean of the distribution) using the composite information from all genes, time points, and replicates.
 #'
 #'@name estimateDispersions
 #'@export
 
 setMethod("estimateDispersions", signature(object="basicKineticModel"), function(object,byGene=T)
 {
+  validObject(object)
   if(is.na(object@data[1]))
     stop("Error: No data detected.  Please run simulateReads first or set @data slot in the provided basicKineticModel object")
 

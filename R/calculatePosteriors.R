@@ -25,7 +25,7 @@ setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(
     warning("No range specified for alpha, using default range of .25x to 2x alpha.")
     alphaRange=c(.25,2)
   }else if(alphaRange[1]>alphaRange[2])
-    stop("Alpha range specified incorrectly. "+alphaRange[1]+" > "+alphaRange[2]+". Must be specified as (lower, upper)")
+    stop(paste0("Alpha range specified incorrectly. Lower: ",alphaRange[1]," > Upper: ",alphaRange[2],". Upper must be greater than Lower"))
   else if(length(alphaRange)>2)
     stop("Too many arguments supplied for alpha range.  Must be a vector of length 2 in the form (lower, upper).")
 
@@ -34,7 +34,7 @@ setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(
     warning("No range specified for beta, using default range of .25x to 2x beta.")
     betaRange=c(.25,2)
   }else if(betaRange[1]>betaRange[2])
-    stop("beta range specified incorrectly. "+betaRange[1]+" > "+betaRange[2]+". Must be specified as (lower, upper)")
+    stop(paste0("Beta range specified incorrectly. Lower: ",betaRange[1]," > Upper: ",betaRange[2],". Upper must be greater than Lower"))
   else if(length(betaRange)>2)
     stop("Too many arguments supplied for beta range.  Must be a vector of length 2 in the form (lower, upper).")
 

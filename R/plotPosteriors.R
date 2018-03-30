@@ -68,6 +68,16 @@ setMethod("plotPosteriors", signature(object="basicKineticModel",geneIdx="numeri
     geneIdx=geneIdx[1]
   }
 
+  if(!is.null(alphaRange) & alphaRange[1]>alphaRange[2])
+    stop(paste0("Alpha range specified incorrectly. Lower: ",alphaRange[1]," > Upper: ",alphaRange[2],". Upper must be greater than Lower"))
+  else if(length(alphaRange)>2)
+    stop("Too many arguments supplied for alpha range.  Must be a vector of length 2 in the form (lower, upper).")
+
+  if(!is.null(betaRange) & betaRange[1]>betaRange[2])
+    stop(paste0("Beta range specified incorrectly. Lower: ",betaRange[1]," > Upper: ",betaRange[2],". Upper must be greater than Lower"))
+  else if(length(betaRange)>2)
+    stop("Too many arguments supplied for beta range.  Must be a vector of length 2 in the form (lower, upper).")
+
   posteriorData = object@posteriors[[geneIdx]]
 
   if(recalculate)
