@@ -1,7 +1,7 @@
 #produces a negative log lilkelyhood function for a given (set of) gene(s)
 #should be used for only one gene at a time for purposes of param optimization
 #' @include getAbund.R
-nllFactory = function(geneIdx,object)
+nllFactory = function(geneIdx,object,dispByGene)
 {
   obs = object@data[geneIdx,]
   time=object@expMetadata$time
@@ -9,10 +9,23 @@ nllFactory = function(geneIdx,object)
   normFactors = object@normFactors
   dispersion = object@dispersionModel
 
-  return(function(params)
+  if(dispByGene)
   {
-    expMu = getAbund(params[1],params[2],time,initVal)*normFactors
-    logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
-    return(-sum(logProb,na.rm=T)) #currently generating NaN for t=0
-  })
+    return(function(params)
+    {
+      expMu = getAbund(params[1],params[2],time,initVal)*normFactors
+      logProb = dnbinom(obs,mu=expMu,size=dispersion(geneIdx), log = T)
+      return(-sum(logProb,na.rm=T)) #currently generating NaN for t=0
+    })
+  }
+  else
+  {
+    return(function(params)
+    {
+      expMu = getAbund(params[1],params[2],time,initVal)*normFactors
+      logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
+      return(-sum(logProb,na.rm=T)) #currently generating NaN for t=0
+    })
+  }
+
 }

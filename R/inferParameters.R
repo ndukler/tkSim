@@ -17,7 +17,7 @@ setGeneric("inferParameters", function(object,...) standardGeneric("inferParamet
 #' @export
 #'
 
-setMethod("inferParameters", signature(object="basicKineticModel"), function(object,dispersionModel=NULL)
+setMethod("inferParameters", signature(object="basicKineticModel"), function(object,dispersionModel=NULL,dispByGene=T)
 {
   ## Check if an dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
@@ -57,7 +57,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
 
 
   #optimize to find Max Likelyhood of params
-  nLL = lapply(X=1:nrow(object@data), FUN=nllFactory,object=object) #see nllFactory.R
+  nLL = lapply(X=1:nrow(object@data), FUN=nllFactory,object=object,dispByGene=dispByGene) #see nllFactory.R
   paramRes = lapply(X=nLL,FUN=function(x){
               optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,1),hessian=T)
             })
