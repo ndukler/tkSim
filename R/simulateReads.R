@@ -17,7 +17,7 @@ setGeneric("simulateReads",signature=c('object'),def = function(object,...) {sta
 #' bkm = simulateData(bkm) #optional
 #' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))})
 #' @export
-setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=NULL,dispersionModel=NULL){
+setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=NULL,dispersionModel=NULL,dispByGene=T){
   validObject(object)
   ## Check if a dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
@@ -63,18 +63,38 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   ## Rescale for library size
   z=prop.table(temp,margin = 2)*expectedLibSize #prop.table(margin=2) => column percentages
   # print(z/expectedLibSize)
-  indx=1
-  for(t in 1:ncol(z)){
-    for(tr in 1:nrow(object@simData)){
-      simReads[tr, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@dispersionModel(z[tr,t]),mu = z[tr,t])
+  if(dispByGene)
+  {
+    indx=1
+    for(t in 1:ncol(z)){
+      for(tr in 1:nrow(object@simData)){
+        simReads[tr, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@dispersionModel(tr),mu = z[tr,t])
+      }
+      spikeIndx=1
+      for(tr in (nrow(object@simData)+1):nrow(z)){
+        spikeIns[spikeIndx, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@dispersionModel(tr),mu = z[tr,t]) #HANDLE SI differently for DISP???
+        spikeIndx = spikeIndx+1
+      }
+      indx = indx+replicates
     }
-    spikeIndx=1
-    for(tr in (nrow(object@simData)+1):nrow(z)){
-      spikeIns[spikeIndx, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@dispersionModel(z[tr,t]),mu = z[tr,t])
-      spikeIndx = spikeIndx+1
-    }
-    indx = indx+replicates
   }
+
+  if(!dispByGene)
+  {
+    indx=1
+    for(t in 1:ncol(z)){
+      for(tr in 1:nrow(object@simData)){
+        simReads[tr, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@dispersionModel(z[tr,t]),mu = z[tr,t])
+      }
+      spikeIndx=1
+      for(tr in (nrow(object@simData)+1):nrow(z)){
+        spikeIns[spikeIndx, indx:(indx+replicates-1)] = rnbinom(n=replicates,size = object@dispersionModel(z[tr,t]),mu = z[tr,t])
+        spikeIndx = spikeIndx+1
+      }
+      indx = indx+replicates
+    }
+  }
+
   rownames(simReads) = object@ids
   colnames(simReads) = paste0("time_",as.character(rep(object@times,each=replicates)))
   rownames(simReads) = object@ids
