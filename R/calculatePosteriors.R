@@ -1,4 +1,4 @@
-setGeneric("calculatePosteriors", function(object, alphaRange,...) standardGeneric("calculatePosteriors"))
+setGeneric("calculatePosteriors", function(object,...) standardGeneric("calculatePosteriors"))
 
 #' Calculate Posterior Probabilities for Infered Parameters
 #'
@@ -22,29 +22,35 @@ setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(
 {
   if(alphaRange[1]==0)
   {
-    stop("Must enter a range for alpha. It should be in the form c(lower,upper) where lower and upper are multipliers that are applied to the inferred parameter to calculate the bounds")
-  }
+    warning("No range specified for alpha, using default range of .25x to 2x alpha.")
+    alphaRange=c(.25,2)
+  }else if(alphaRange[1]>alphaRange[2])
+    stop("Alpha range specified incorrectly. "+alphaRange[1]+" > "+alphaRange[2]+". Must be specified as (lower, upper)")
+  else if(length(alphaRange)>2)
+    stop("Too many arguments supplied for alpha range.  Must be a vector of length 2 in the form (lower, upper).")
+
+  if(betaRange[1]==0)
+  {
+    warning("No range specified for beta, using default range of .25x to 2x beta.")
+    betaRange=c(.25,2)
+  }else if(betaRange[1]>betaRange[2])
+    stop("beta range specified incorrectly. "+betaRange[1]+" > "+betaRange[2]+". Must be specified as (lower, upper)")
+  else if(length(betaRange)>2)
+    stop("Too many arguments supplied for beta range.  Must be a vector of length 2 in the form (lower, upper).")
+
+  #    | betaRange[1]==0)
+  # {
+  #   stop("Must enter ranges for both alpha and beta. They should be in the form c(lower,upper) where lower and upper are multipliers that are applied to the inferred parameter to calculate the bounds")
+  # }
 
   if(is.null(logProbAlpha))
   {
-    # #defined as 1/(max(a)-min(a)) on a per-gene basis
-    # logProbAlpha = function(geneIdx,object,alphaRange)
-    # {
-    #   aMax = alphaRange[2]*object@inferedParams[geneIdx,"alpha"]
-    #   aMin = alphaRange[1]*object@inferedParams[geneIdx,"alpha"]
-    #   return(function(x){log(1/(aMax-aMin))})
-    # }
-    # logProbAlpha = lapply(X=1:nrow(object@data),FUN=logProbAlpha,object=object,alphaRange=alphaRange)
-
-    #global basis
-    aMax = alphaRange[2]*max(object@inferedParams[,'alpha'])
-    aMin = alphaRange[1]*min(object@inferedParams[,'alpha'])
-    logProbAlpha = function(x){rep(log(1/sqrt(paramSpaceSize)),length(x))} #log(1/(aMax-aMin)) == -log(aMax-aMin)
+    logProbAlpha = function(x){rep(log(1/sqrt(paramSpaceSize)),length(x))}
   }
 
   if(is.null(logProbBeta))
   {
-    logProbBeta = function(x){rep(log(1),length(x))}
+    logProbBeta = function(x){rep(log(1/sqrt(paramSpaceSize)),length(x))}
   }
 
   #generate likelyhood esitmators for each gene
@@ -55,8 +61,10 @@ setMethod("calculatePosteriors",signature(object="basicKineticModel"), function(
     beta = object@inferedParams[x,"beta"]
     aMax = alphaRange[2]*alpha
     aMin = alphaRange[1]*alpha
+    bMax = betaRange[2]*beta
+    bMin = betaRange[1]*beta
 
-    paramRange = expand.grid(seq(aMin,aMax,length.out = sqrt(paramSpaceSize)), seq(10^-5,1,length.out = sqrt(paramSpaceSize)))
+    paramRange = expand.grid(seq(aMin,aMax,length.out = sqrt(paramSpaceSize)), seq(bMin,bMax,length.out = sqrt(paramSpaceSize)))
     numerator = apply(paramRange,1,function(y) logLH[[x]](y)) + logProbAlpha(paramRange[,1]) + logProbBeta(paramRange[,2])
     marginal = logSumExp(numerator)
     posterior = exp(numerator-marginal)

@@ -12,7 +12,7 @@ setGeneric("inferParameters", function(object,...) standardGeneric("inferParamet
 #' @examples
 #' bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10), times=0:30)
 #' bkm=simulateData(bkm) #optional
-#' bkm=simulateReads(bkm) #optional
+#' bkm=simulateReads(bkm)
 #' bkm=inferParameters(bkm)
 #' @export
 #'
@@ -59,7 +59,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   #optimize to find Max Likelyhood of params
   nLL = lapply(X=1:nrow(object@data), FUN=nllFactory,object=object,dispByGene=dispByGene) #see nllFactory.R
   paramRes = lapply(X=nLL,FUN=function(x){
-              optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,1),hessian=T)
+              optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,Inf),hessian=T)
             })
   paramSummary = t(vapply(X=paramRes,FUN.VALUE=numeric(7),FUN=function(x){
                     #calculate 95% CI using hessian
