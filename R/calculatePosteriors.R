@@ -12,6 +12,8 @@ setGeneric("calculatePosteriors", function(object,...) standardGeneric("calculat
 #' @param paramSpaceSize The total size of parameter space to numerically integrate over. Half of the parameter space will be given to each parameter.
 #' @param logProbAlpha  A function that returns the log probability for a given value of \code{alpha}
 #' @param lobProbBeta A function that returns the log probability for a given value of \code{beta}
+#' @param dispByGene Boolean controlling the expected nature of the \code{dispersionModel}. See \code{dispersionModel} description in \code{\link{inferParameters}}
+#' for more details.
 #'
 #' @name calculatePosteriors
 #' @include  class-basicKineticModel.R llFactory.R logSumExp.R
