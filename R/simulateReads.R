@@ -10,15 +10,30 @@ setGeneric("simulateReads",signature=c('object'),def = function(object,...) {sta
 #' @param numSpikeIns The number of unique spike in transcripts used.
 #' @param spikeInSizes The expected number of reads for each type of spike in used. May be a single number used for all spike-in transcripts
 #'  or an array of abundances for each unique spike-in transcript.
-#' @param dispersionModel A function that takes in a vector of means and returns a vector of dispersions based on those means for a negative bionomial model
+#' @param dispersionModel A function for handling dispersions for a negative bionomial model. If \code{dispByGene = TRUE} then the function should take a gene
+#' index as an input and return a sigle dispersion estimate as an output.  If \code{dispByGene = FALSE} then the function should take a mean as an input and return
+#' a dispersion estimate based on the value of that mean as an output. See the return values from \code{\link{estimateDispersions}} for examples.
+#' @param dispByGene Boolean controlling the expected nature of the \code{dispersionModel}. See \code{dispersionModel} description for more details.
+#'
 #' @name simulateReads
 #' @include  class-kineticModel.R
 #' @examples
-#' bkm = basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
+#' ##setup
+#' bkm = basicKineticModel(times=0:30,synthRate = 1:10,degRate = rep(0.3,10))
 #' bkm = simulateData(bkm) #optional
-#' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))})
+#'
+#' ##mean based dispersion estimation, equal spikeIns
+#' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))},dispByGene=F)
+#'
+#' ##unequal spike ins
+#' bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=c(100,200,100,300),dispersionModel=function(x){rep(10^4,length(x))},dispByGene=F)
+#'
+#' ##unequal library sizes
+#' els = seq(10^6,10^8,length.out=31)
+#' bkm = simulateReads(bkm,expectedLibSize=els,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))},dispByGene=F)
+#'
 #' @export
-setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=NULL,dispersionModel=NULL,dispByGene=T){
+setMethod("simulateReads", signature(object = "kineticModel"),function(object,expectedLibSize=10^6,replicates=2,numSpikeIns=4,spikeInSizes=NULL,dispersionModel=NULL,dispByGene=F){
   validObject(object)
   ## Check if a dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
@@ -37,7 +52,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   }
   ## Check all the other arguments
   if(!is.numeric(expectedLibSize))
-    stop("lib.size must be a numeric of length one")
+    stop("expectedLibsize must be numeric")
   else if(length(expectedLibSize)!=1 && length(expectedLibSize)!=length(object@times))
     stop("Error: expectedLibSize must either be a single value or a vector of equal length to object@times")
   if(!is.numeric(replicates) || replicates < 1)
@@ -106,7 +121,7 @@ setMethod("simulateReads", signature(object = "kineticModel"),function(object,ex
   rownames(simReads) = object@ids
   object@data = simReads
   object@expMetadata = data.frame(time=rep(object@times,each=replicates))
-  #OLD object@normFactors=(colSums(object@data)+colSums(spikeIns))/colSums(object@data) ## used trimmed mean as default,  FINISH
+
   ##normalize by first sample and then average per 'replicate'
   object@spikeIns = spikeIns
   object@normFactors = colMeans(spikeIns/spikeIns[,1])
