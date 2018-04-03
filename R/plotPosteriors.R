@@ -84,6 +84,14 @@ setMethod("plotPosteriors", signature(object="basicKineticModel",geneIdx="numeri
   {
     params = list(...)
 
+    optionalParamNames = c("logProbAlpha","dispByGene","logProbBeta","paramSpaceSize")
+    unusedParams = setdiff(names(params),optionalParamNames)
+    if(length(unusedParams))
+      warning('unused arguments: ', paste(lapply(unusedParams,function(x) paste0("(",x," = ",params[x],")")),collapse = ', '))
+
+    if(!("dispByGene"%in%names(params)))
+      error("If recalculating posterior, dispByGene must be provided.")
+
     #check for supplied params, provide defaults if necessary
     if(!("logProbAlpha"%in%names(params)))
     {
