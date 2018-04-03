@@ -7,7 +7,7 @@
 \usage{
 \S4method{simulateReads}{kineticModel}(object, expectedLibSize = 10^6,
   replicates = 2, numSpikeIns = 4, spikeInSizes = NULL,
-  dispersionModel = NULL, dispByGene = T)
+  dispersionModel = NULL, dispByGene = F)
 }
 \arguments{
 \item{object}{A \linkS4class{kineticModel} object}
@@ -15,20 +15,35 @@
 \item{expectedLibSize}{The expected total number of reads per sequencing run/batch. May be supplied as a single number which will be applied uniformly,
 or a vector of library sizes where each element corresponds to the library depth at a given time point.}
 
-\item{replicates}{Replicates per condition}
+\item{replicates}{Number of replicates per condition}
 
 \item{numSpikeIns}{The number of unique spike in transcripts used.}
 
 \item{spikeInSizes}{The expected number of reads for each type of spike in used. May be a single number used for all spike-in transcripts
 or an array of abundances for each unique spike-in transcript.}
 
-\item{dispersionModel}{A function that takes in a vector of means and returns a vector of dispersions based on those means for a negative bionomial model}
+\item{dispersionModel}{A function for handling dispersions for a negative bionomial model. If \code{dispByGene = TRUE} then the function should take a gene
+index as an input and return a sigle dispersion estimate as an output.  If \code{dispByGene = FALSE} then the function should take a mean as an input and return
+a dispersion estimate based on the value of that mean as an output. See the return values from \code{\link{estimateDispersions}} for examples.}
+
+\item{dispByGene}{Boolean controlling the expected nature of the \code{dispersionModel}. See \code{dispersionModel} description for more details.}
 }
 \description{
 Simulate reads from a \linkS4class{kineticModel} object. Will simulate data if the input \linkS4class{kineticModel} does not already contain simulated data.
 }
 \examples{
-bkm = basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10))
+##setup
+bkm = basicKineticModel(times=0:30,synthRate = 1:10,degRate = rep(0.3,10))
 bkm = simulateData(bkm) #optional
-bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))})
+
+##mean based dispersion estimation, equal spikeIns
+bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))},dispByGene=F)
+
+##unequal spike ins
+bkm = simulateReads(bkm,expectedLibSize=10^6,replicates=3,numSpikeIns=4,spikeInSizes=c(100,200,100,300),dispersionModel=function(x){rep(10^4,length(x))},dispByGene=F)
+
+##unequal library sizes
+els = seq(10^6,10^8,length.out=31)
+bkm = simulateReads(bkm,expectedLibSize=els,replicates=3,numSpikeIns=4,spikeInSizes=200,dispersionModel=function(x){rep(10^4,length(x))},dispByGene=F)
+
 }

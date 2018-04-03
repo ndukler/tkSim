@@ -6,7 +6,8 @@
 \usage{
 basicKineticModel(times = NA_real_, synthRate = NA_real_,
   degRate = NA_real_, initAbund = NA_real_, ids = NA, data = NULL,
-  expMetadata = data.frame(), dispersionModel = function(x) { })
+  spikeIns = NULL, expMetadata = data.frame(), normFactors = NULL,
+  dispersionModel = function(x) { })
 }
 \arguments{
 \item{synthRate}{Synthesis rates. Must be greater than 0.}

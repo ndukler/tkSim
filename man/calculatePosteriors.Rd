@@ -20,6 +20,9 @@ be applied to the infered value of \code{beta}.  Must be defined as \code{c(lowe
 
 \item{paramSpaceSize}{The total size of parameter space to numerically integrate over. Half of the parameter space will be given to each parameter.}
 
+\item{dispByGene}{Boolean controlling the expected nature of the \code{dispersionModel}. See \code{dispersionModel} description in \code{\link{inferParameters}}
+for more details.}
+
 \item{logProbAlpha}{A function that returns the log probability for a given value of \code{alpha}}
 
 \item{lobProbBeta}{A function that returns the log probability for a given value of \code{beta}}

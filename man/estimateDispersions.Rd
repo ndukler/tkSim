@@ -13,9 +13,9 @@
 \item{byGene}{Boolean controlling fuction return value. See \code{description} or \code{value} for more information}
 }
 \value{
-UPDATE ME:::::::If \code{byGene = TRUE} then a vector containing a single dispersion
-estimate for each gene will be returned. If \code{FALSE} then a general function will be returned that gives a dispersion estimate
-for a given mean using the composite information from all genes, time points, and replicates.
+If \code{byGene = TRUE} then a function that takes a gene index and returns a single dispersion
+estimate for that gene. If \code{FALSE} then a general function will be returned that gives a dispersion estimate
+for a given read value (assumed to be the mean of the distribution) using the composite information from all genes, time points, and replicates.
 }
 \description{
 Estimates the dispersions for each gene using DESeq2. If \code{byGene = TRUE} then a vector containing a single dispersion

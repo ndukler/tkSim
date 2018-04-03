@@ -6,7 +6,7 @@
 \title{Plot Data Against the Fit Parameters}
 \usage{
 \S4method{plotParameterFit}{basicKineticModel}(object, geneIdx = NULL,
-  legend = F, scaleData = T)
+  legend = F, scaleData = T, plotTimes = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{basicKineticModel} object}
@@ -17,6 +17,10 @@
 
 \item{scaleData}{If true, will scale the data by a given genes's corresponding normalization factors. If false, will scale the fit function by the average
 normalization factor across replicates for each time point.}
+
+\item{plotTimes}{A vector of times specifying the times over which to plot the data and parameter curve. All time points in \code{object@data} that are also in
+\code{plotTimes} will be plotted. Time points \strong{only} in \code{plotTimes} will be ignored.  If \code{NULL} the times specified by \code{object@times}
+will be used.}
 }
 \description{
 Plot the curve defined by the estimated parameters against the raw data for a selected set of genes
