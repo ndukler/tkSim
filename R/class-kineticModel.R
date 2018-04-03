@@ -4,15 +4,17 @@ checkBase <- function(object) {
     if(nrow(object@data)!=length(object@ids)){
       errors=c(errors,"There must be the same number of data entries as ids")
     }
+    if(nrow(object@spikeIns)==0)
+          errors = c(errors,"Must provide BOTH data AND spike ins. @spikeIns is empty.")
     if(ncol(object@data)!=nrow(object@expMetadata)){
       errors=c(errors,"There must be the same number of rows in the design table as there are columns in the data matrix")
     }
     if(length(object@normFactors)>0){
       if(length(object@normFactors)!= ncol(object@data)){
-        errors=c(errors,"There must be the same number of size factors as there are columns in the data matrix.")
+        errors=c(errors,"There must be the same number of normalization factors as there are columns in the data matrix.")
       }
       if(!is.numeric(object@normFactors)){
-        errors=c(errors,"The size factors must be numeric.")
+        errors=c(errors,"The normailzation factors must be numeric.")
       }
     }
   }
