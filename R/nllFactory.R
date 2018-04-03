@@ -14,6 +14,8 @@ nllFactory = function(geneIdx,object,dispByGene)
     return(function(params)
     {
       expMu = getAbund(params[1],params[2],time,initVal)*normFactors
+      tryCatch(dnbinom(obs,mu=expMu,size=dispersion(geneIdx), log = T),warning=function(w)
+        cat("\nWarning: Poor data quality causing optimizer to step outside of bounds\nAttempted: alpha =",params[1],"\tbeta =",params[2],"\n"))
       logProb = dnbinom(obs,mu=expMu,size=dispersion(geneIdx), log = T)
       return(-sum(logProb,na.rm=T)) #currently generating NaN for t=0
     })
@@ -23,6 +25,8 @@ nllFactory = function(geneIdx,object,dispByGene)
     return(function(params)
     {
       expMu = getAbund(params[1],params[2],time,initVal)*normFactors
+      tryCatch(dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T),warning=function(w)
+        cat("\nWarning: Poor data quality causing optimizer to step outside of bounds\nAttempted: alpha=",params[1],"\tbeta=",params[2],"\n"))
       logProb = dnbinom(obs,mu=expMu,size=dispersion(expMu), log = T)
       return(-sum(logProb,na.rm=T)) #currently generating NaN for t=0
     })

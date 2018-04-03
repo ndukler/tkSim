@@ -81,16 +81,25 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   #optimize to find Max Likelyhood of params
   nLL = lapply(X=1:nrow(object@data), FUN=nllFactory,object=object,dispByGene=dispByGene) #see nllFactory.R
   paramRes = lapply(X=nLL,FUN=function(x){
-              optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,Inf),hessian=T)
+              optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,1),hessian=T)#,control=list(ndeps=c(10^-6,10^-6)))
             })
+  # value = 1
   paramSummary = t(vapply(X=paramRes,FUN.VALUE=numeric(7),FUN=function(x){
                     #calculate 95% CI using hessian
-                    fisher = solve(x$hessian) #returns inverse matrix  !!!FIX, should be -hessian
+                    fisher = solve(x$hessian) #returns inverse matrix
+                    # tryCatch(sqrt(diag(fisher)),warning=function(w){cat("\nParams:\t",x$par,"\nFisher:\t",fisher,
+                    #                                                      "\nGeneIdx:\t",value,"\nDat:\t",as.character(rate.comb[value,]),"\n")})
+                    # value <<- value+1
                     sigma = sqrt(diag(fisher))
                     upper = x$par+1.96*sigma
                     lower = x$par-1.96*sigma
                     c(upper[1],x$par[1],lower[1],upper[2],x$par[2],lower[2],x$convergence)
                   }))
+  #error messages for bad param inference
+  badCI = which(rowSums(is.na(paramSummary))>0)
+  if(length(badCI))
+    cat("\nError: Bad parameter estimates for ",paste(object@ids[badCI],collapse=", "),".\nPlease check data quality for these samples.\n",sep="")
+
   names(paramRes) = object@ids
   colnames(paramSummary) = c("a+CI","alpha","a-CI","b+CI","beta","b-CI","errorCode")
   rownames(paramSummary) = object@ids
