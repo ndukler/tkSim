@@ -47,13 +47,20 @@ methods::setClass(Class = "basicKineticModel",
 #' @param expMetadata A data.frame where each row corresponds to the column in data with the same index and the columns are different properties
 #' @name basicKineticModel
 #' @export
-basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_,initAbund=NA_real_,ids=NA,data=NULL,expMetadata=data.frame(),dispersionModel=function(x){}){
+basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_,initAbund=NA_real_,ids=NA,data=NULL,spikeIns=NULL,expMetadata=data.frame(),normFactors=NULL,dispersionModel=function(x){}){
   if(length(initAbund) == 1 && is.na(initAbund))
     initAbund=rep(0,length(synthRate))
   if(length(ids) == 1 && is.na(ids))
     ids=as.character(1:max(length(synthRate),nrow(data)))
   if(is.null(data))
     data=matrix(nrow=0,ncol=0)
-  new("basicKineticModel",times=times,synthRates=synthRate,degRates=degRate,initVals=initAbund,ids=ids,expMetadata=expMetadata,
-      data=data,dispersionModel=dispersionModel)
+
+  model=new("basicKineticModel",times=times,synthRates=synthRate,degRates=degRate,initVals=initAbund,ids=ids,data=data,spikeIns=spikeIns,
+            expMetadata=expMetadata,normFactors=normFactors,dispersionModel=dispersionModel)
+  if(is.null(model@normFactors))
+  {
+    cat("\nNo normalization factors provided.  Calculating normalization factors using spike ins.\n")
+    model@normFactors = colMeans(model@spikeIns/model@spikeIns[,1])
+  }
+  return(model)
 }
