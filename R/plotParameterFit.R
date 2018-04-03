@@ -10,9 +10,14 @@ setGeneric("plotParameterFit", function(object,...) standardGeneric("plotParamet
 #' @param legend Boolean controlling if the plot should contain a legend.
 #' @param scaleData If true, will scale the data by a given genes's corresponding normalization factors. If false, will scale the fit function by the average
 #' normalization factor across replicates for each time point.
+#' @param plotTimes A vector of times specifying the times over which to plot the data and parameter curve. All time points in \code{object@@data} that are also in
+#' \code{plotTimes} will be plotted. Time points \strong{only} in \code{plotTimes} will be ignored.  If \code{NULL} the times specified by \code{object@@times}
+#' will be used.
 #' @include  class-kineticModel.R getAbund.R
 #' @export
-setMethod("plotParameterFit",signature(object="basicKineticModel"), function(object,geneIdx=NULL,legend=F,scaleData=T){
+setMethod("plotParameterFit",signature(object="basicKineticModel"), function(object,geneIdx=NULL,legend=F,scaleData=T,plotTimes=NULL){
+  validObject(object)
+
   if(is.null(geneIdx))
     geneIdx = nrow(object@data)
 
@@ -35,6 +40,13 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
     plotData = reshape2::melt(object@data[geneIdx,]/object@normFactors)
   }else{
     plotData = reshape2::melt(object@data[geneIdx,])
+  }
+
+  #plot only the time points specified in plotTimes
+  if(!is.null(plotTimes))
+  {
+    plotData = plotData[which(as.numeric(gsub("time_","",plotData$Var2))%in%plotTimes),]
+    fitData = fitData[which(fitData$time%in%plotTimes),]
   }
 
   #plot data and fit
