@@ -31,5 +31,5 @@ methods::setClass(Class = "kineticModel",
                   representation = representation(ids="character",times="numeric",simData="matrix",equlibVals="numeric",
                                                   data="matrix",expMetadata="data.frame",normFactors="numeric",dispersionModel="function",spikeIns="matrix",
                                                   inferenceResults="list",inferedParams="matrix"),
-                  prototype = methods::prototype(ids = NA_character_, times=NA_real_,equlibVals=NA_real_,dispersionModel=NULL),
+                  prototype = methods::prototype(ids = NA_character_, times=NA_real_,equlibVals=NA_real_,dispersionModel=NULL, normFactors=NA_real_),
                   validity = checkBase)
