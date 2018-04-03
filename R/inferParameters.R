@@ -1,28 +1,46 @@
 setGeneric("inferParameters", function(object,...) standardGeneric("inferParameters"))
 
 #' Infer Parameters from Read Data
-#'
+#' @description
 #' Infers \code{alpha} (synthesis rate) and \code{beta} (degredation rate) from sequencing read data (stored in the \code{data} slot) using the
-#' basic kinetic model: \code{dx/dt = alpha - beta * x}.  If no read data exists in the provided \linkS4class{basicKineticModel} then simulated read data
+#' basic kinetic model: \code{dx/dt = alpha - beta * x}.
+#' @description
+#' If no read data exists in the provided \linkS4class{basicKineticModel} then simulated read data
 #' will be generated using simulation data stored in \code{@@simData} before parameter inference. If no simulated data exists, it will be generated
 #' before simulating read data and inferring parameters.
+#'
 #' @param object A \linkS4class{basicKineticModel} object
 #' @param dispersionModel  A disperson model to use for inference. If not specified, the dispersion model stored in \code{object} will be used instead.
 #' Must be specified as a function of the gene being analized if \code{dispByGene = TRUE} or as a function of the mean of the distribution if \code{dispByGene = FALSE}.
 #' See the return values of \code{\link{estimateDispersions}} for examples of these two kinds of functions.
+#' @param dispByGene Boolean controlling the expected nature of the \code{dispersionModel}. See \code{dispersionModel} description for more details.
+#'
 #' @name inferParameters
 #' @include  class-basicKineticModel.R getAbund.R nllFactory.R
 #' @examples
-#' bkm=basicKineticModel(synthRate = 1:10,degRate = rep(0.3,10), times=0:30)
+#' ##setup
+#' bkm=basicKineticModel(times=0:30, synthRate = 1:10,degRate = rep(0.3,10))
 #' bkm=simulateData(bkm) #optional
-#' bkm=simulateReads(bkm)
+#' bkm=simulateReads(bkm,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,dispersionModel=function(x){rep(10^3,length(x))}, dispByGene=F)
+#'
+#' ##infer params using same dispersion as simulated data
+#' bkm=inferParameters(bkm,byGene=F)
+#'
+#' ##infer params using per-gene dispersion estimates from read data (dispersion estimates for each gene based on that gene's data alone)
 #' bkm@dispersionModel = estimateDispersions(bkm,byGene=T)
 #' bkm=inferParameters(bkm)
+#'
+#' ##infer params using mean-based dispersion estimates from read data (dispersion estimates based on entire data set)
+#' bkm@dispersionModel = estimateDispersions(bkm,byGene=F)
+#' bkm=inferParameters(bkm,byGene=F)
+#'
 #' @export
 #'
 
 setMethod("inferParameters", signature(object="basicKineticModel"), function(object,dispersionModel=NULL,dispByGene=T)
 {
+  validObject(object)
+
   ## Check if an dispersionModel is needed. Then, if an dispersion model is included, check for validity and update dispersionModel
   if(is.null(dispersionModel)){
     if(is.null(object@dispersionModel(1))){
