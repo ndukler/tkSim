@@ -86,7 +86,7 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   # value = 1
   paramSummary = t(vapply(X=paramRes,FUN.VALUE=numeric(7),FUN=function(x){
                     #calculate 95% CI using hessian
-                    fisher=tryCatch(solve(x$hessian),error = function(e) {names=names(x);cat("\nError: Zero Hessian, check data\nHessian\t",x$hessian,"\nResults:\t",
+                    fisher=tryCatch(solve(x$hessian),error = function(e) {names=names(x);cat("\nError: Zero Hessian, all data is likely zero\nHessian\t",x$hessian,"\nResults:\t",
                                                                       paste(lapply(names,function(y) paste0("(",y," = ",x[y],")")),collapse = ', '),"\n")},
                              finally = {x$hessian})
                     # fisher = solve(x$hessian) #returns inverse matrix
