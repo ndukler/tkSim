@@ -81,11 +81,14 @@ setMethod("inferParameters", signature(object="basicKineticModel"), function(obj
   #optimize to find Max Likelyhood of params
   nLL = lapply(X=1:nrow(object@data), FUN=nllFactory,object=object,dispByGene=dispByGene) #see nllFactory.R
   paramRes = lapply(X=nLL,FUN=function(x){
-              optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,1),hessian=T)#,control=list(ndeps=c(10^-6,10^-6)))
+              optim(par=c(1,0.2), fn=x, method="L-BFGS-B", lower=c(10^-5,10^-5), upper=c(Inf,Inf),hessian=T)#,control=list(ndeps=c(10^-6,10^-6)))
             })
   # value = 1
   paramSummary = t(vapply(X=paramRes,FUN.VALUE=numeric(7),FUN=function(x){
                     #calculate 95% CI using hessian
+                    # fisher=tryCatch(solve(x$hessian),error = function(e) {names=names(x);cat("\nHessian\t",x$hessian,"\nResults:\t",
+                    #                                                   paste(lapply(names,function(y) paste0("(",y," = ",x[y],")")),collapse = ', '),"\n")},
+                    #          finally = {x$hessian})
                     fisher = solve(x$hessian) #returns inverse matrix
                     # tryCatch(sqrt(diag(fisher)),warning=function(w){cat("\nParams:\t",x$par,"\nFisher:\t",fisher,
                     #                                                      "\nGeneIdx:\t",value,"\nDat:\t",as.character(rate.comb[value,]),"\n")})

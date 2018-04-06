@@ -20,18 +20,19 @@ setMethod("plotParameterFit",signature(object="basicKineticModel"), function(obj
 
   if(is.null(geneIdx))
     geneIdx = nrow(object@data)
+  times = object@expMetadata$time
 
-  fitData = mapply(getAbund,alpha=object@inferedParams[geneIdx,"alpha"],beta=object@inferedParams[geneIdx,"beta"],initVal=object@initVals[geneIdx],MoreArgs = list(time=object@times))
+  fitData = mapply(getAbund,alpha=object@inferedParams[geneIdx,"alpha"],beta=object@inferedParams[geneIdx,"beta"],initVal=object@initVals[geneIdx],MoreArgs = list(time=unique(times)))
 
   colnames(fitData) = object@ids[geneIdx]
   #compute average normalization factors per time point
-  times = object@expMetadata$time
+
   if(!scaleData)
   {
     fitNormFactors = sapply(unique(times),function(x,times,normFactors){mean(normFactors[which(times==x)])},times=times,normFactors=object@normFactors)
     fitData = fitData*fitNormFactors
   }
-  rownames(fitData) = object@times
+  rownames(fitData) = unique(times)
   fitData = reshape2::melt(fitData)
   colnames(fitData) = c("time","gene","value")
 

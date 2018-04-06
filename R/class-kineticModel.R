@@ -9,7 +9,9 @@ checkBase <- function(object) {
     if(ncol(object@data)!=nrow(object@expMetadata)){
       errors=c(errors,"There must be the same number of rows in the design table as there are columns in the data matrix")
     }
-    if(length(object@normFactors)>0){
+    if(length(object@normFactors)==1 && is.na(object@normFactors))
+      {}
+    else if(length(object@normFactors)>0){
       if(length(object@normFactors)!= ncol(object@data)){
         errors=c(errors,"There must be the same number of normalization factors as there are columns in the data matrix.")
       }
