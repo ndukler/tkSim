@@ -2,9 +2,10 @@ setGeneric("estimateDispersions",function(object,...) standardGeneric("estimateD
 
 #'Estimate Dispersions Using DESeq2
 #'
-#'Estimates the dispersions for each gene using DESeq2. If \code{byGene = TRUE} then a vector containing a single dispersion
-#'estimate for each gene will be returned. If \code{FALSE} then a general function will be returned that gives a dispersion estimate
-#'for a given mean using the composite information from all genes, time points, and replicates.
+#'Estimates the dispersions for each gene using DESeq2. Overwrites the existing dipersion model in the supplied \code{\linkS4class{basicKinetic Model}}
+#'and then returns the object. If \code{byGene = TRUE} then a function returning  a single dispersion
+#'estimate for each gene will be set to \code{@@dispersionModel}. If \code{FALSE} then a general function that gives a dispersion estimate
+#'for a given mean using the composite information from all genes, time points, and replicates will be set to \code{@@dispersionModel}.
 #'
 #'@param object A \linkS4class{basicKineticModel} object
 #'@param byGene Boolean controlling fuction return value. See \code{description} or \code{value} for more information
@@ -38,9 +39,10 @@ setMethod("estimateDispersions", signature(object="basicKineticModel"), function
       {
         return(function(x) 1/disp[x])
       }
-    fn2 = fn(disp)
-    return(fn2)
+    object@dispersionModel = fn(disp)
   }
   else
-    return(function(x) 1/dds@dispersionFunction(x))
+    object@dispersionModel = function(x){ 1/dds@dispersionFunction(x)}
+
+  return(object)
 })
