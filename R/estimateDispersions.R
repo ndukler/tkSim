@@ -31,7 +31,7 @@ setMethod("estimateDispersions", signature(object="basicKineticModel"), function
   DESeq2::normalizationFactors(dds) = matrix(object@normFactors,nrow=nrow(data),ncol=ncol(data),byrow = T)
   dds = DESeq2::estimateDispersions(dds)
   disp = DESeq2::dispersions(dds)
-  bob<<-dds@dispersionFunction
+
 
   if(byGene)
   {
