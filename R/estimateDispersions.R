@@ -32,7 +32,6 @@ setMethod("estimateDispersions", signature(object="basicKineticModel"), function
   dds = DESeq2::estimateDispersions(dds)
   disp = DESeq2::dispersions(dds)
 
-
   if(byGene)
   {
     fn = function(disp)
