@@ -58,6 +58,8 @@ basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_
       ids=as.character(1:max(length(synthRate),nrow(data)))
   }else #real data model
   {
+    if(length(times)==1 && is.na(times))
+      warning("Do not supply @times when providing experimental data.  Times will be overwritted using information in @expMetadata.")
     if(length(initVals) == 1 && is.na(initVals))
     {
       warning("No initial values provided, using the default initial value of 0 for all samples.")
@@ -75,10 +77,17 @@ basicKineticModel <- function(times=NA_real_,synthRate=NA_real_,degRate=NA_real_
 
   model=new("basicKineticModel",times=times,synthRates=synthRate,degRates=degRate,initVals=initVals,ids=ids,data=data,spikeIns=spikeIns,
             expMetadata=expMetadata,normFactors=normFactors,dispersionModel=dispersionModel)
-  if(length(model@normFactors)==1 && is.na(model@normFactors) && nrow(model@data)!=0)
+  if(nrow(model@data)!=0) ##experimental data provided
   {
-    cat("\nNo normalization factors provided.  Calculating normalization factors using spike ins.\n")
-    model@normFactors = colMeans(model@spikeIns/model@spikeIns[,1])
+    if(length(model@normFactors)==1 && is.na(model@normFactors))
+    {
+      cat("\nNo normalization factors provided.  Calculating normalization factors using spike ins.\n")
+      model@normFactors = colMeans(model@spikeIns/model@spikeIns[,1])
+    }
+    if(length(times)==1 && is.na(times))
+    {
+      times = unique(model@expMetadata$times)
+    }
   }
   return(model)
 }

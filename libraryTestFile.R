@@ -9,7 +9,7 @@ library(tkSim)
 bkm=basicKineticModel(times=0:30,synthRate=1:10,degRate = rep(0.5,10))
 bkm=simulateData(bkm)
 bkm=simulateReads(bkm,expectedLibSize=10^6,replicates=3,spikeInSizes = 200,dispersionModel=function(x){rep(10^3,length(x))},dispByGene=F) #CLUGE
-bkm@dispersionModel = estimateDispersions(bkm)
+bkm = estimateDispersions(bkm)
 bkm=inferParameters(bkm)
 plotParameterFit(bkm,geneIdx=1:3)
 
@@ -21,7 +21,7 @@ plotPosteriors(object=bkm,geneIdx=3,alphaRange=c(3000,4500),betaRange=c(.45,.55)
 
 ##test using program with experimental data
 bkm2 = basicKineticModel(data=bkm@data,spikeIns=bkm@spikeIns,expMetadata = bkm@expMetadata)
-bkm2@dispersionModel = estimateDispersions(bkm2)
+bkm2 = estimateDispersions(bkm2)
 bkm2=inferParameters(bkm2)
 plotParameterFit(bkm2,geneIdx=1:3)
 bkm2=calculatePosteriors(bkm2,alphaRange=c(.25,2))

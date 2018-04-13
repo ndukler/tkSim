@@ -5,8 +5,8 @@
 \title{Basic Kinetic Model Constructor}
 \usage{
 basicKineticModel(times = NA_real_, synthRate = NA_real_,
-  degRate = NA_real_, initAbund = NA_real_, ids = NA, data = NULL,
-  spikeIns = NULL, expMetadata = data.frame(), normFactors = NULL,
+  degRate = NA_real_, initVals = NA_real_, ids = NA, data = NULL,
+  spikeIns = NULL, expMetadata = data.frame(), normFactors = NA_real_,
   dispersionModel = function(x) { })
 }
 \arguments{
@@ -14,7 +14,7 @@ basicKineticModel(times = NA_real_, synthRate = NA_real_,
 
 \item{degRate}{Degredation rate. Must be between 0 and 1.}
 
-\item{initAbund}{Initial abundance at time 0.}
+\item{initVals}{Initial abundances at time 0.}
 
 \item{ids}{A character string id.}
 
